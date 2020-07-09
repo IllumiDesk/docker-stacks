@@ -1,9 +1,11 @@
 ARG BASE_IMAGE=jupyter/datascience-notebook:76402a27fd13
 FROM $BASE_IMAGE
 
-ARG NBGRADER_VERSION=0.6.1
+ARG JHUB_HASH_COMMIT=fd28e224f2de5e7b525483330150988ec3e295c6
 
-ENV JHUB_CONFIG=$JHUB_CONFIG
+ENV JHUB_HASH_COMMIT=$JHUB_HASH_COMMIT
+ENV DEBIAN_FRONTEND=noninteractive
+
 ENV DEBIAN_FRONTEND=noninteractive
 
 USER root
@@ -44,27 +46,18 @@ USER $NB_USER
 
 COPY requirements.txt requirements.txt
 RUN python3 -m pip install -r requirements.txt \
- && rm requirements.txt
+ && rm requirements.txt \
+ && fix-permissions $CONDA_DIR \
+ && fix-permissions /home/$NB_USER
 
-# Update JupyterHub version, so that its consistent with JupyterHub
+# Update JupyterHub version, so that its consistent with version returned
+# by JupyterHub API
 RUN git clone https://github.com/jupyterhub/jupyterhub \
  && cd jupyterhub \
- && git checkout -b build {{git_jhub_hash_commit}} \
+ && git checkout -b build $JHUB_HASH_COMMIT \
  && npm install \
  && npm install tslib \
  && python3 -m pip install .
-
-# nbgrader
-RUN python3 -m pip install nbgrader==$NBGRADER_VERSION && \
-    fix-permissions $CONDA_DIR && \
-    fix-permissions /home/$NB_USER
-
-# copy global nbgrader config
-COPY global_nbgrader_config.py /etc/jupyter/nbgrader_config.py
-
-# support iframes with jupyter notebooks, copy to local config scope to override
-# global notebook configs if they are present
-COPY jupyter_notebook_config.py /etc/jupyterhub/jupyter_notebook_config.py
 
 # enable classic notebook extensions
 # https://jupyter-contrib-nbextensions.readthedocs.io/en/latest/install.html
@@ -109,3 +102,7 @@ RUN jupyter serverextension enable nbgitpuller --sys-prefix
 EXPOSE 8888
 
 WORKDIR /home/$NB_USER
+
+# copy config files
+COPY global_nbgrader_config.py /etc/jupyter/nbgrader_config.py
+COPY jupyter_notebook_config.py /etc/jupyterhub/jupyter_notebook_config.py

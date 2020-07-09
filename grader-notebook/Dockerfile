@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=illumidesk/datascience-notebook
+ARG BASE_IMAGE=illumidesk/base-notebook
 FROM $BASE_IMAGE
 
 ARG USER_ROLE=Grader

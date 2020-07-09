@@ -8,6 +8,16 @@ Dockerfiles and related assets for IllumiDesk's workspace images.
 
 ## Quickstart
 
+1. Build images
+
+Build images:
+
+```
+make build-all
+```
+
+2. Run:
+
 Running the image standalone is helpful for testing. Refer to the sections below to ensure the images have the required assets to run with the IllumiDesk stack.
 
 ```bash
