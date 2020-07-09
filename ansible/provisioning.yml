@@ -1,0 +1,8 @@
+---
+  # play 1
+  - name: User workspaces
+    hosts: illumidesk
+    become: true
+    gather_facts: false
+    roles:
+      - { role: workspaces, tags: workspaces }
