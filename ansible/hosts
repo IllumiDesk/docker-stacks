@@ -1,8 +1,0 @@
-all:
-  hosts:
-    illumidesk:
-      ansible_host: 34.209.214.71
-      ansible_port: 22
-      ansible_python_interpreter: /usr/bin/python3
-      ansible_user: ubuntu
-      ansible_ssh_private_key_file: /Users/gregwerner/keys/illumidesk-poc.pem
