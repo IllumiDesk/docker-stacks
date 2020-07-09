@@ -37,6 +37,8 @@ The IllumiDesk docker layers for grader images are illustrated below:
 
 The IllumiDesk docker layers for workspace types are illustrated below:
 
+![Jupyter notebook workspace images](/img/workspace_images.png)
+
 ## Build Mechanism
 
 1. Build and tag the base image
