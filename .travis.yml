@@ -19,4 +19,4 @@ jobs:
 
 stages:
   - name: full-build
-    if: type = cron AND branch = master
+    if: type = cron AND branch = main
