@@ -4,8 +4,6 @@
 # Use bash for inline if-statements in target
 SHELL:=bash
 OWNER:=illumidesk
-ARCH:=$(shell uname -m)
-DIFF_RANGE?=master...HEAD
 
 # Need to list the images in build dependency order
 ALL_STACKS:=base-notebook \
