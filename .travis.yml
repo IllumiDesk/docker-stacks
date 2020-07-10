@@ -1,0 +1,22 @@
+---
+dist: bionic
+language: python
+python:
+  - 3.7
+sudo: required
+services:
+  - docker
+
+jobs:
+  include:
+    - stage: full-build
+      install:
+        - pip install --upgrade pip
+        - make lint-install
+      script:
+        - set -e
+        - make lint-build-all
+
+stages:
+  - name: full-build
+    if: type = cron AND branch = master
