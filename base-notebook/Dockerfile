@@ -11,7 +11,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 USER root
 
 RUN apt-get update \
- && apt-get install -y \
+ && apt-get install --no-install-recommends -y \
     apt-transport-https \
     curl \
     dumb-init \
@@ -30,60 +30,58 @@ RUN apt-get update \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /tmp
-
-# Unpack and install the Java kernel
-RUN curl -L https://github.com/SpencerPark/IJava/releases/download/v1.3.0/ijava-1.3.0.zip > ijava-kernel.zip
-RUN unzip ijava-kernel.zip -d ijava-kernel \
- && cd ijava-kernel \
- && python3 install.py --sys-prefix \
- && rm ../ijava-kernel.zip
+# add nbgrader exchange directory
+RUN mkdir -p /srv/nbgrader/exchange \
+ && fix-permissions /srv/nbgrader/exchange
 
 # Install packages from requirements file
 WORKDIR $HOME
 
 USER $NB_USER
 
-COPY requirements.txt requirements.txt
-RUN python3 -m pip install -r requirements.txt \
- && rm requirements.txt \
- && fix-permissions $CONDA_DIR \
- && fix-permissions /home/$NB_USER
+WORKDIR /tmp
+
+# Unpack and install the Java kernel
+RUN curl -L https://github.com/SpencerPark/IJava/releases/download/v1.3.0/ijava-1.3.0.zip > ijava-kernel.zip
+RUN unzip ijava-kernel.zip -d ijava-kernel
+WORKDIR /tmp/ijava-kernel
+RUN python3 install.py --sys-prefix \
+ && rm ../ijava-kernel.zip
 
 # Update JupyterHub version, so that its consistent with version returned
 # by JupyterHub API
-RUN git clone https://github.com/jupyterhub/jupyterhub \
- && cd jupyterhub \
- && git checkout -b build $JHUB_HASH_COMMIT \
+RUN git clone https://github.com/jupyterhub/jupyterhub
+WORKDIR /tmp/jupyterhub
+RUN git checkout -b build $JHUB_HASH_COMMIT \
  && npm install \
  && npm install tslib \
  && python3 -m pip install .
 
+WORKDIR $HOME
+
+COPY requirements.txt requirements.txt
+RUN python3 -m pip install -r requirements.txt \
+ && rm requirements.txt \
+ && fix-permissions "${CONDA_DIR}" \
+ && fix-permissions "/home/${NB_USER}"
+
 # enable classic notebook extensions
 # https://jupyter-contrib-nbextensions.readthedocs.io/en/latest/install.html
 RUN jupyter contrib nbextension install --sys-prefix && \
-    fix-permissions $CONDA_DIR && \
-    fix-permissions /home/$NB_USER
+    fix-permissions "${CONDA_DIR}" && \
+    fix-permissions "/home/${NB_USER}"
 
 # install plotly-orca with npm globally
 RUN npm install -g electron@6.1.4 orca
-
-# with nbgrader installed, add scripts/configs and update permissions
-USER root
-
-RUN mkdir -p /srv/nbgrader/exchange \
- && fix-permissions /srv/nbgrader/exchange
-
-RUN chmod +x /usr/local/bin/start-singleuser.sh
 
 # set container to run with $NB_USER by default
 # enable/disable nbgrader extensions
 USER $NB_USER
 
 # set up log file location
-RUN mkdir -p /home/$NB_USER/.local/share/ \
- && touch /home/$NB_USER/.local/share/nbgrader.logs \
- && chmod +x /home/$NB_USER/.local/share/nbgrader.logs
+RUN mkdir -p "/home/${NB_USER}/.local/share/" \
+ && touch "/home/${NB_USER}/.local/share/nbgrader.logs" \
+ && chmod +x "/home/${NB_USER}/.local/share/nbgrader.logs"
 
 # nbgrader
 # Install global extensions, and disable them globally. We will re-enable

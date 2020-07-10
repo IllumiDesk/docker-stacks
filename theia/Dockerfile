@@ -2,13 +2,12 @@ FROM ubuntu:18.04 AS builder
 
 # install development tools
 RUN apt-get update \
- && apt-get install -y \
+ && apt-get install --no-install-recommends -y \
     curl \
-    sudo \
     build-essential \
     jq \
     vim \
- && curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - \
+ && curl -sL https://deb.nodesource.com/setup_10.x | -E bash - \
  && apt-get install -y \
     nodejs \
  && npm install -g yarn
@@ -22,9 +21,9 @@ WORKDIR /theia-app
 RUN yarn \
  && NODE_OPTIONS="--max_old_space_size=4096" yarn theia build && \
     yarn autoclean --init \
- && echo *.ts >> .yarnclean \
- && echo *.ts.map >> .yarnclean \
- && echo *.spec.* >> .yarnclean \
+ && echo -- *.ts >> .yarnclean \
+ && echo -- *.ts.map >> .yarnclean \
+ && echo -- *.spec.* >> .yarnclean \
  && yarn autoclean --force \
  && yarn cache clean
 
@@ -40,7 +39,7 @@ USER root
 WORKDIR /tmp
 
 COPY --from=builder /theia-app/illumidesk-theia_0.0.1_all.deb /tmp/
-RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - \
+RUN curl -sL https://deb.nodesource.com/setup_10.x | -E bash - \
  && apt-get install -y /tmp/illumidesk-theia_0.0.1_all.deb \
  && rm /tmp/illumidesk-theia_0.0.1_all.deb
 
@@ -57,11 +56,11 @@ ENV THEIA_DEFAULT_PLUGINS=local-dir:plugins
 ## NVM
 # https://stackoverflow.com/questions/25899912/how-to-install-nvm-in-docker
 
-# Set debconf to run non-interactively
-RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
-
 # Set the SHELL to bash with pipefail option
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+# Set debconf to run non-interactively
+RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
 # Replace shell with bash so we can source files
 RUN rm /bin/sh \

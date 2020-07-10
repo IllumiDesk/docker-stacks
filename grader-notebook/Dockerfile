@@ -12,10 +12,3 @@ WORKDIR /home/$NB_USER
 RUN jupyter nbextension enable --sys-prefix create_assignment/main \
  && jupyter nbextension enable --sys-prefix formgrader/main --section=tree \
  && jupyter serverextension enable --sys-prefix nbgrader.server_extensions.formgrader
-
-# Copy customized formgrader files
-COPY nbgrader/nbextensions/formgrader/main.js /opt/conda/lib/python3.7/site-packages/nbgrader/nbextensions/formgrader/main.js
-
-COPY nbgrader/server_extensions/formgrader/static/js/manage_assignments.js /opt/conda/lib/python3.7/site-packages/nbgrader/server_extensions/formgrader/static/js/manage_assignments.js
-COPY nbgrader/server_extensions/formgrader/templates/base.tpl /opt/conda/lib/python3.7/site-packages/nbgrader/server_extensions/formgrader/templates/base.tpl
-COPY nbgrader/server_extensions/formgrader/templates/manage_assignments.tpl /opt/conda/lib/python3.7/site-packages/nbgrader/server_extensions/formgrader/templates/manage_assignments.tpl
