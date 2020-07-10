@@ -9,16 +9,14 @@ services:
 
 jobs:
   include:
-    - stage: full-test
+    - stage: full-build
       install:
         - pip install --upgrade pip
-        - make dev-env
         - make lint-install
       script:
         - set -e
-        - make docs
-        - make lint-build-test-all DARGS="--build-arg TEST_ONLY_BUILD=1"
+        - make lint-build-all
 
 stages:
-  - name: full-test
+  - name: full-build
     if: type = cron AND branch = master
