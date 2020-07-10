@@ -3,20 +3,23 @@ FROM $BASE_IMAGE
 
 USER root
 
+# Set the SHELL to bash with pipefail option
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 RUN curl -fsSL https://code-server.dev/install.sh | sh
 
-EXPOSE 8080
+USER $NB_USER
 
 WORKDIR $HOME
-
-USER $NB_USER
 
 COPY requirements.txt requirements.txt
 RUN python3 -m pip install -r requirements.txt \
  && rm requirements.txt \
- && fix-permissions $CONDA_DIR \
- && fix-permissions /home/$NB_USER
+ && fix-permissions "${CONDA_DIR}" \
+ && fix-permissions "/home/${NB_USER}"
 
 RUN jupyter serverextension enable --sys-prefix --py jupyter_server_proxy \
  && jupyter labextension install @jupyterlab/server-proxy \
  && jupyter lab build
+
+EXPOSE 8080
