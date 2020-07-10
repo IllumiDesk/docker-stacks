@@ -1,8 +1,8 @@
 {
     "name": "illumidesk-theia",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "license": "EPL-2.0",
-    "description": "IllumiDesk Theia IDE debian package",
+    "description": "IllumiDesk Theia IDE",
     "engines": {
         "node": "10.x"
     },
@@ -25,11 +25,11 @@
         "@theia/cli": "latest"
     },
     "resolutions": {
-        "vscode-json-languageserver": "1.2.2",
-        "vscode-languageserver-protocol": "3.15.0-next.9",
-        "vscode-languageserver-types": "3.15.0-next.5",
-        "**/vscode-json-languageserver/**/vscode-languageserver": "6.0.0-next.1",
-        "**/moment": "2.24.0"
+        "vscode-json-languageserver": "1.2.3",
+        "vscode-languageserver-protocol": "3.15.3",
+        "vscode-languageserver-types": "3.15.1",
+        "**/vscode-json-languageserver/**/vscode-languageserver": "6.1.1",
+        "**/moment": "2.27.0"
     },
     "scripts": {
         "prebuild-deb": "npm install -g node-deb",

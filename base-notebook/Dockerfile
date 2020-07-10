@@ -48,6 +48,8 @@ WORKDIR /tmp/ijava-kernel
 RUN python3 install.py --sys-prefix \
  && rm ../ijava-kernel.zip
 
+WORKDIR /tmp
+
 # Update JupyterHub version, so that its consistent with version returned
 # by JupyterHub API
 RUN git clone https://github.com/jupyterhub/jupyterhub

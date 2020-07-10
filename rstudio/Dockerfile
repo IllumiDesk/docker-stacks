@@ -1,7 +1,6 @@
 FROM illumidesk/base-notebook AS base
 
-ARG BASE_IMAGE=illumidesk/rstudio:base-f2de174cc427
-FROM $BASE_IMAGE
+FROM illumidesk/rstudio:base-f2de174cc427
 
 ENV NB_USER=jovyan
 ENV NB_UID=1000

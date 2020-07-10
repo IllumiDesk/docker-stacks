@@ -2,12 +2,13 @@ FROM ubuntu:18.04 AS builder
 
 # install development tools
 RUN apt-get update \
- && apt-get install --no-install-recommends -y \
+ && apt-get install -y \
     curl \
+    sudo \
     build-essential \
     jq \
     vim \
- && curl -sL https://deb.nodesource.com/setup_10.x | -E bash - \
+ && curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - \
  && apt-get install -y \
     nodejs \
  && npm install -g yarn
@@ -31,15 +32,14 @@ RUN yarn \
 RUN npm run build-deb
 
 # transfer debian package to a new clean image and install theia
-ARG BASE_IMAGE=illumidesk/base-notebook
-FROM $BASE_IMAGE
+FROM illumidesk/base-notebook:latest
 
 USER root
 
 WORKDIR /tmp
 
 COPY --from=builder /theia-app/illumidesk-theia_0.0.1_all.deb /tmp/
-RUN curl -sL https://deb.nodesource.com/setup_10.x | -E bash - \
+RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - \
  && apt-get install -y /tmp/illumidesk-theia_0.0.1_all.deb \
  && rm /tmp/illumidesk-theia_0.0.1_all.deb
 
@@ -62,16 +62,12 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # Set debconf to run non-interactively
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
-# Replace shell with bash so we can source files
-RUN rm /bin/sh \
- && ln -s /bin/bash /bin/sh
-
 # Install nvm with node and npm
 RUN mkdir -p $NVM_DIR \
- && curl "https://raw.githubusercontent.com/creationix/nvm/v${NVM_VERSION}/install.sh" | bash \
+ && curl "https://raw.githubusercontent.com/creationix/nvm/v${NVM_VERSION}/install.sh" | sudo -E bash \
  && . "${NVM_DIR}/nvm.sh" \
- && nvm install $NODE_VERSION \
- && nvm alias default $NODE_VERSION \
+ && nvm install "${NODE_VERSION}" \
+ && nvm alias default "${NODE_VERSION}" \
  && nvm use default
 
 WORKDIR $HOME
@@ -81,8 +77,8 @@ USER $NB_USER
 COPY requirements.txt requirements.txt
 RUN python3 -m pip install -r requirements.txt \
  && rm requirements.txt \
- && fix-permissions $CONDA_DIR \
- && fix-permissions /home/$NB_USER
+ && fix-permissions "${CONDA_DIR}" \
+ && fix-permissions "/home/${NB_USER}"
 
 RUN jupyter serverextension enable --sys-prefix --py jupyter_server_proxy \
  && jupyter labextension install @jupyterlab/server-proxy \
