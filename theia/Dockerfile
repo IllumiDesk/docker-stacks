@@ -1,6 +1,7 @@
 FROM ubuntu:18.04 AS builder
 
 # install development tools
+# hadolint ignore=DL4006
 RUN apt-get update \
  && apt-get install -y \
     curl \
