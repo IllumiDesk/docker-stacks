@@ -1,11 +1,8 @@
 FROM ubuntu:18.04 AS builder
 
-# Set the SHELL to bash with pipefail option
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-
 # install development tools
 RUN apt-get update \
- && apt-get install --no-install-recommends -y \
+ && apt-get install -y \
     curl \
     sudo \
     build-essential \
