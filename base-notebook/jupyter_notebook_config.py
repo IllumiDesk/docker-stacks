@@ -7,6 +7,7 @@ import stat
 
 c = get_config()
 
+
 c.NotebookApp.iopub_data_rate_limit = 1.0e10
 c.NotebookApp.ip = '0.0.0.0'
 c.NotebookApp.open_browser = False
