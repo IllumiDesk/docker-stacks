@@ -79,9 +79,9 @@ RUN mkdir -p /home/$NB_USER/.local/share/ \
 # nbgrader
 # Install global extensions, and disable them globally. We will re-enable
 # specific ones for different user accounts using docker-entrypoint.sh
-RUN jupyter nbextension install --symlink --sys-prefix --py nbgrader --overwrite && \
-    jupyter nbextension disable --sys-prefix --py nbgrader && \
-    jupyter serverextension disable --sys-prefix --py nbgrader
+RUN jupyter nbextension install --symlink --sys-prefix --py nbgrader --overwrite \
+ && jupyter nbextension disable --sys-prefix --py nbgrader \
+ && jupyter serverextension disable --sys-prefix --py nbgrader
 
 # Everybody gets the validate extension, however.
 RUN jupyter nbextension enable --sys-prefix validate_assignment/main --section=notebook && \
