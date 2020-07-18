@@ -1,71 +1,57 @@
 ARG BASE_IMAGE=jupyter/datascience-notebook:76402a27fd13
 FROM $BASE_IMAGE
 
-ARG JHUB_HASH_COMMIT=fd28e224f2de5e7b525483330150988ec3e295c6
+ARG NBGRADER_VERSION=0.6.1
 
-ENV JHUB_HASH_COMMIT=$JHUB_HASH_COMMIT
-ENV DEBIAN_FRONTEND=noninteractive
-
-ENV DEBIAN_FRONTEND=noninteractive
+ENV JHUB_CONFIG=$JHUB_CONFIG
 
 USER root
 
 RUN apt-get update \
- && apt-get install --no-install-recommends -y \
-    apt-transport-https \
-    curl \
-    dumb-init \
+ && apt-get install -y \
+    at-spi2-core \
     ffmpeg \
-    gradle \
-    htop \
-    libssl-dev \
-    lsb-release \
-    maven \
+    libgl1-mesa-glx \
+    libgtk-3-dev \
+    libqt5widgets5 \
+    libxrender1 \
+    libxext6 \
+    libxt6 \
     nano \
-    openjdk-11-jdk \
-    procps \
-    ssh \
-    sudo \
-    vim \
+    xauth \
+    xvfb \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
-# add nbgrader exchange directory
-RUN mkdir -p /srv/nbgrader/exchange \
- && fix-permissions /srv/nbgrader/exchange
+USER $NB_UID
 
 # Install packages from requirements file
-WORKDIR $HOME
-
-USER $NB_USER
-
-WORKDIR /tmp
-
-# Unpack and install the Java kernel
-RUN curl -L https://github.com/SpencerPark/IJava/releases/download/v1.3.0/ijava-1.3.0.zip > ijava-kernel.zip
-RUN unzip ijava-kernel.zip -d ijava-kernel
-WORKDIR /tmp/ijava-kernel
-RUN python3 install.py --sys-prefix \
- && rm ../ijava-kernel.zip
+COPY requirements.txt /tmp/jupyternb/requirements.txt
+RUN python3 -m pip install --no-cache -r /tmp/jupyternb/requirements.txt
 
 WORKDIR /tmp
 
-# Update JupyterHub version, so that its consistent with version returned
-# by JupyterHub API
+# Update JupyterHub version, so that its consistent with JupyterHub
 RUN git clone https://github.com/jupyterhub/jupyterhub
+
 WORKDIR /tmp/jupyterhub
-RUN git checkout -b build $JHUB_HASH_COMMIT \
+
+RUN git checkout -b build fd28e224f2de5e7b525483330150988ec3e295c6 \
  && npm install \
  && npm install tslib \
  && python3 -m pip install .
 
-WORKDIR $HOME
+# nbgrader
+RUN python3 -m pip install nbgrader=="${NBGRADER_VERSION}" && \
+    fix-permissions "${CONDA_DIR}" && \
+    fix-permissions "/home/${NB_USER}"
 
-COPY requirements.txt requirements.txt
-RUN python3 -m pip install -r requirements.txt \
- && rm requirements.txt \
- && fix-permissions "${CONDA_DIR}" \
- && fix-permissions "/home/${NB_USER}"
+# copy global nbgrader config
+COPY global_nbgrader_config.py /etc/jupyter/nbgrader_config.py
+
+# support iframes with jupyter notebooks, copy to local config scope to override
+# global notebook configs if they are present
+COPY jupyter_notebook_config.py /etc/jupyterhub/jupyter_notebook_config.py
 
 # enable classic notebook extensions
 # https://jupyter-contrib-nbextensions.readthedocs.io/en/latest/install.html
@@ -76,9 +62,17 @@ RUN jupyter contrib nbextension install --sys-prefix && \
 # install plotly-orca with npm globally
 RUN npm install -g electron@6.1.4 orca
 
+# with nbgrader installed, add scripts/configs and update permissions
+USER root
+
+RUN mkdir -p /srv/nbgrader/exchange \
+ && fix-permissions /srv/nbgrader/exchange
+
+RUN chmod +x /usr/local/bin/start-singleuser.sh
+
 # set container to run with $NB_USER by default
 # enable/disable nbgrader extensions
-USER $NB_USER
+USER $NB_UID
 
 # set up log file location
 RUN mkdir -p "/home/${NB_USER}/.local/share/" \
@@ -93,16 +87,12 @@ RUN jupyter nbextension install --symlink --sys-prefix --py nbgrader --overwrite
  && jupyter serverextension disable --sys-prefix --py nbgrader
 
 # Everybody gets the validate extension, however.
-RUN jupyter nbextension enable --sys-prefix validate_assignment/main --section=notebook \
- && jupyter serverextension enable --sys-prefix nbgrader.server_extensions.validate_assignment
+RUN jupyter nbextension enable --sys-prefix validate_assignment/main --section=notebook && \
+    jupyter serverextension enable --sys-prefix nbgrader.server_extensions.validate_assignment
 
-# nbgitpuller
-RUN jupyter serverextension enable nbgitpuller --sys-prefix
-
-EXPOSE 8888
+WORKDIR /tmp
+COPY install.jl /tmp/install.jl
+RUN julia install.jl \
+ && fix-permissions "${JULIA_PKGDIR}" "${CONDA_DIR}/share/jupyter"
 
 WORKDIR /home/$NB_USER
-
-# copy config files
-COPY global_nbgrader_config.py /etc/jupyter/nbgrader_config.py
-COPY jupyter_notebook_config.py /etc/jupyterhub/jupyter_notebook_config.py
