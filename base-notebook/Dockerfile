@@ -8,8 +8,7 @@ ENV JHUB_CONFIG=$JHUB_CONFIG
 USER root
 
 RUN apt-get update \
- && apt-get upgrade -y \
- && apt-get install \
+ && apt-get install -y \
     at-spi2-core \
     ffmpeg \
     libgl1-mesa-glx \
@@ -20,7 +19,7 @@ RUN apt-get update \
     libxt6 \
     nano \
     xauth \
-    xvfb -y \
+    xvfb \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
@@ -30,18 +29,22 @@ USER $NB_UID
 COPY requirements.txt /tmp/jupyternb/requirements.txt
 RUN python3 -m pip install --no-cache -r /tmp/jupyternb/requirements.txt
 
+WORKDIR /tmp
+
 # Update JupyterHub version, so that its consistent with JupyterHub
-RUN git clone https://github.com/jupyterhub/jupyterhub \
- && cd jupyterhub \
- && git checkout -b build fd28e224f2de5e7b525483330150988ec3e295c6 \
+RUN git clone https://github.com/jupyterhub/jupyterhub
+
+WORKDIR /tmp/jupyterhub
+
+RUN git checkout -b build fd28e224f2de5e7b525483330150988ec3e295c6 \
  && npm install \
  && npm install tslib \
  && python3 -m pip install .
 
 # nbgrader
-RUN python3 -m pip install nbgrader==$NBGRADER_VERSION && \
-    fix-permissions $CONDA_DIR && \
-    fix-permissions /home/$NB_USER
+RUN python3 -m pip install nbgrader=="${NBGRADER_VERSION}" && \
+    fix-permissions "${CONDA_DIR}" && \
+    fix-permissions "/home/${NB_USER}"
 
 # copy global nbgrader config
 COPY global_nbgrader_config.py /etc/jupyter/nbgrader_config.py
@@ -53,8 +56,8 @@ COPY jupyter_notebook_config.py /etc/jupyterhub/jupyter_notebook_config.py
 # enable classic notebook extensions
 # https://jupyter-contrib-nbextensions.readthedocs.io/en/latest/install.html
 RUN jupyter contrib nbextension install --sys-prefix && \
-    fix-permissions $CONDA_DIR && \
-    fix-permissions /home/$NB_USER
+    fix-permissions "${CONDA_DIR}" && \
+    fix-permissions "/home/${NB_USER}"
 
 # install plotly-orca with npm globally
 RUN npm install -g electron@6.1.4 orca
@@ -72,9 +75,9 @@ RUN chmod +x /usr/local/bin/start-singleuser.sh
 USER $NB_UID
 
 # set up log file location
-RUN mkdir -p /home/$NB_USER/.local/share/ \
- && touch /home/$NB_USER/.local/share/nbgrader.logs \
- && chmod +x /home/$NB_USER/.local/share/nbgrader.logs
+RUN mkdir -p "/home/${NB_USER}/.local/share/" \
+ && touch "/home/${NB_USER}/.local/share/nbgrader.logs" \
+ && chmod +x "/home/${NB_USER}/.local/share/nbgrader.logs"
 
 # nbgrader
 # Install global extensions, and disable them globally. We will re-enable
