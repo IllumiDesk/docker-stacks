@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/IllumiDesk/docker-stacks.svg?branch=main)](https://travis-ci.com/IllumiDesk/docker-stacks)
+
 # IllumiDesk docker-stacks
 
 Dockerfiles and related assets for IllumiDesk's workspace images.
@@ -27,6 +29,16 @@ docker run -p 8888:8888 illumidesk/base-notebook:latest
 > Refer to [docker's documentation](https://docs.docker.com/engine/reference/run/) for additional `docker run ...` options.
 
 ## Image catalogue
+
+| Image | DockerHub Link |
+| --- | --- |
+| illumidesk/base-notebook | [![Docker Image](https://img.shields.io/docker/automated/illumidesk/base-notebook)](https://img.shields.io/docker/automated/illumidesk/base-notebook?label=base-notebook) |
+| illumidesk/grader-notebook | [![Docker Image](https://img.shields.io/docker/automated/illumidesk/grader-notebook)](https://hub.docker.com/repository/docker/illumidesk/base-notebook?label=grader-notebook) |
+| illumidesk/instructor-notebook | [![Docker Image](https://img.shields.io/docker/automated/illumidesk/instructor-notebook)](https://hub.docker.com/repository/docker/illumidesk/instructor-notebook?label=instructor-notebook) |
+| illumidesk/learner-notebook | [![Docker Image](https://img.shields.io/docker/automated/illumidesk/learner-notebook)](https://hub.docker.com/repository/docker/illumidesk/learner-notebook?label=learner-notebook) |
+| illumidesk/rstudio | [![Docker Image](https://img.shields.io/docker/automated/illumidesk/rstudio)](https://hub.docker.com/repository/docker/illumidesk/rstudio?label=rstudio) |
+| illumidesk/theia | [![Docker Image](https://img.shields.io/docker/automated/illumidesk/theia)](https://hub.docker.com/repository/docker/illumidesk/theia?label=theia) |
+| illumidesk/vscode | [![Docker Image](https://img.shields.io/docker/automated/illumidesk/vscode)](https://hub.docker.com/repository/docker/illumidesk/vscode?label=vscode) |
 
 ### Images prepared for Learning Tools Interoperability (LTI) Roles
 
