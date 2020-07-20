@@ -18,10 +18,10 @@ make build-all
 
 2. Run:
 
-Running the image standalone is helpful for testing. Refer to the sections below to ensure the images have the required assets to run with the IllumiDesk stack.
+Running the image standalone is helpful for testing:
 
 ```bash
-docker run -p 8888:8888 illumidesk/datascience-notebook
+docker run -p 8888:8888 illumidesk/base-notebook:latest
 ```
 
 > Refer to [docker's documentation](https://docs.docker.com/engine/reference/run/) for additional `docker run ...` options.
@@ -30,7 +30,12 @@ docker run -p 8888:8888 illumidesk/datascience-notebook
 
 ### Images prepared for Learning Tools Interoperability (LTI) Roles
 
-- **Base Jupyter Notebook**: based on the [`jupyter/datascience-notebook`](https://github.com/jupyter/docker-stacks/tree/master/datascience-notebook) image + `Java kernel`.
+- **Base Jupyter Notebook**: based on the [`jupyter/datascience-notebook`](https://github.com/jupyter/docker-stacks/tree/master/datascience-notebook) plus:
+
+  - Java kernel using JRE based on Open JDK 11
+  - Julia, Python, and R packages installed with files (install.jl, requirements.txt, environment.yml, respectively).
+  - Jupyter Notebook configuration to support iFrames
+
 - **Learner Jupyter Notebook**: adds `nbgrader` extensions for the `learner` role.
 - **Instructor Jupyter Notebook**: adds `nbgrader` extensions for the `instructor` role.
 - **Grader Jupyter Notebook**: adds `nbgrader` extensions for the shared `grader` notebook.

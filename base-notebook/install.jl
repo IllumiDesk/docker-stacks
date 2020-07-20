@@ -4,6 +4,7 @@
 using Pkg
 pkg"add Colors"
 pkg"add CSV"
+pkg"add DelimitedFiles"
 pkg"add GR"
 pkg"add IJulia"
 pkg"add ImageView"

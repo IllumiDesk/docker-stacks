@@ -1,0 +1,8 @@
+black==19.10b0
+docker==4.2.2
+flake8==3.8.3
+pytest==5.4.3
+recommonmark==0.5.0
+requests==2.24.0
+tabulate==0.8.7
+transifex-client==0.13.11
