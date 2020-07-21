@@ -16,6 +16,7 @@ RUN apt-get update \
     ffmpeg \
     gdebi-core \
     gnupg \
+    libclang-dev \
     libapparmor1 \
     libgl1-mesa-glx \
     libgtk-3-dev \
