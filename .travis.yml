@@ -9,14 +9,15 @@ services:
 
 jobs:
   include:
-    - stage: full-build
+    - stage: full-test
       install:
         - pip install --upgrade pip
         - make lint-install
       script:
         - set -e
         - make lint-build-all
+        - make test
 
 stages:
-  - name: full-build
-    if: type = cron AND branch = main
+  - name: full-test
+    if: branch = main

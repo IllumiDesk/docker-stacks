@@ -1,8 +1,9 @@
-from jupyter_core.paths import jupyter_data_dir
-import subprocess
-import os
 import errno
+import os
 import stat
+import subprocess
+
+from jupyter_core.paths import jupyter_data_dir
 
 
 c = get_config()
@@ -11,9 +12,7 @@ c = get_config()
 c.NotebookApp.iopub_data_rate_limit = 1.0e10
 c.NotebookApp.ip = "0.0.0.0"
 c.NotebookApp.open_browser = False
-c.NotebookApp.tornado_settings = {
-    "headers": {"Content-Security-Policy": "frame-ancestors 'self' *"}
-}
+c.NotebookApp.tornado_settings = {"headers": {"Content-Security-Policy": "frame-ancestors 'self' *"}}
 
 c.NotebookApp.token = ""
 c.NotebookApp.allow_root = True

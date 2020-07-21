@@ -1,12 +1,16 @@
 # sourced from:
 # https://github.com/jupyter/docker-stacks
-# # Copyright (c) Jupyter Development Team.
+#
+# Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
+#
 import os
 import logging
 
 import docker
+
 import pytest
+
 import requests
 
 from requests.packages.urllib3.util.retry import Retry
@@ -96,7 +100,7 @@ class TrackedContainer:
 
 
 @pytest.fixture(scope="function")
-def container(docker_client: docker.client, image_name: str) -> None:
+def container(docker_client, image_name) -> None:
     """Notebook container with initial configuration appropriate for testing
     (e.g., HTTP port exposed to the host for HTTP calls).
 
@@ -106,4 +110,3 @@ def container(docker_client: docker.client, image_name: str) -> None:
         docker_client, image_name, detach=True, ports={"8888/tcp": 8888}
     )
     yield container
-    container.remove()
