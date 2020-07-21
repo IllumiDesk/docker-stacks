@@ -10,8 +10,6 @@ USER root
 # add rstudio gpg key
 RUN gpg --keyserver keys.gnupg.net --recv-keys 3F32EE77E331692F
 
-RUN apt-get update && apt-get update -y && apt-get install libapparmor1
-
 # download and install rstudio-server
 RUN wget "https://download2.rstudio.org/server/$(lsb_release -sc)/amd64/rstudio-server-${RSTUDIO_VERSION}-amd64.deb" \
  && gdebi "rstudio-server-${RSTUDIO_VERSION}-amd64.deb" \
