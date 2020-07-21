@@ -12,6 +12,7 @@ jobs:
     - stage: full-test
       install:
         - pip install --upgrade pip
+        - pip install -r dev-requirements.txt
         - make lint-install
       script:
         - set -e
