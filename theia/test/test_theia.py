@@ -17,6 +17,8 @@ LOGGER = logging.getLogger(__name__)
         ('node', ['v10.21.0\n'])
     ],
 )
+
+
 def test_cmd(cmd, version_output):
     """Ensures that theia is found in the PATH and that it returns the correct
     version. Other tests verify the correct versions for npm and node.
