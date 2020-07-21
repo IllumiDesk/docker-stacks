@@ -34,6 +34,6 @@ def test_invalid_cmd():
     """Ensure that an invalid command returns a docker.errors.ContainerError
     """
     with pytest.raises(ContainerError):
-        LOGGER.info(f'Test an invalid command ...')
+        LOGGER.info('Test an invalid command ...')
         client = docker.from_env()
         client.containers.run('illumidesk/base-notebook', 'foo --version')
