@@ -61,7 +61,7 @@ lint/%: ## lint the dockerfile(s) for a stack
 
 lint-all: $(foreach I,$(ALL_IMAGES),lint/$(I) ) ## lint all stacks
 
-lint-build-all: $(foreach I,$(ALL_IMAGES),lint/$(I) build/$(I) test/$(I) ) ## lint, build and test all stacks
+lint-build-all: $(foreach I,$(ALL_IMAGES),lint/$(I) build/$(I) ) ## lint, build and test all stacks
 
 lint-install: ## install hadolint
 	@echo "Installing hadolint at $(HADOLINT) ..."

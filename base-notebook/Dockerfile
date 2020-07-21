@@ -24,6 +24,7 @@ RUN apt-get update \
     libxt6 \
     nano \
     openjdk-11-jdk-headless \
+    psmisc \
     xauth \
     xvfb \
  && apt-get clean \

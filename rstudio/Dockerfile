@@ -1,6 +1,6 @@
 FROM illumidesk/base-notebook:latest AS base
 
-FROM illumidesk/rstudio:base
+FROM illumidesk/rstudio:latest
 
 ENV NB_USER=jovyan
 ENV NB_UID=1000
@@ -30,14 +30,3 @@ RUN fix-permissions /etc/jupyter/ \
  && fix-permissions /home/$NB_USER
 
 USER $NB_USER
-
-# #
-# root@d42e86132442:~# cd /etc/rstudio
-# root@d42e86132442:/etc/rstudio# nano rserver.conf
-# root@d42e86132442:/etc/rstudio# nano rsession.conf
-# root@d42e86132442:/etc/rstudio# which R
-# /srv/conda/envs/notebook/bin/R
-# root@d42e86132442:/etc/rstudio# rstudio-server version
-# 1.2.5001
-# root@d42e86132442:/etc/rstudio# which rstudio-server
-# /usr/sbin/rstudio-server
