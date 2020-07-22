@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=illumidesk/base-notebook
+ARG BASE_IMAGE=illumidesk/base-notebook:latest
 FROM $BASE_IMAGE
 
 USER root
