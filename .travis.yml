@@ -17,7 +17,7 @@ jobs:
       script:
         - set -e
         - make lint-build-all
-        - make test
+        - pytest -vv
 
 stages:
   - name: full-test

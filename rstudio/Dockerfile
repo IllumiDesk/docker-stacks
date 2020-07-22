@@ -1,36 +1,32 @@
-FROM illumidesk/base-notebook:latest
+FROM illumidesk/base-notebook:latest AS base
 
-ARG RSTUDIO_VERSION=1.3.1056
+FROM illumidesk/r-conda:latest
 
-ENV RSTUDIO_VERSION="${RSTUDIO_VERSION}"
-ENV PATH="/usr/sbin/:${PATH}"
-
-USER root
-
-# add rstudio gpg key
-RUN gpg --keyserver keys.gnupg.net --recv-keys 3F32EE77E331692F
-
-# download and install rstudio-server
-RUN wget "https://download2.rstudio.org/server/$(lsb_release -sc)/amd64/rstudio-server-${RSTUDIO_VERSION}-amd64.deb" \
- && gdebi "rstudio-server-${RSTUDIO_VERSION}-amd64.deb" \
- && rm "rstudio-server-${RSTUDIO_VERSION}-amd64.deb"
-
-# install requirements
-USER "${NB_UID}"
-WORKDIR "${HOME}"
-COPY requirements.txt "${HOME}/requirements.txt"
-RUN python3 -m pip install -r "${HOME}/requirements.txt" \
- && rm -f "${HOME}/requirements.txt"
+ENV NB_USER=jovyan
+ENV NB_UID=1000
+ENV NB_GID=100
+ENV HOME="/home/${NB_USER}"
 
 USER root
+
+RUN mkdir -p /etc/jupyter
+
+# copy files from base image
+COPY --from=base /usr/local/bin/start* /usr/local/bin/
+COPY --from=base /usr/local/bin/fix-permissions /usr/local/bin/
+COPY --from=base /etc/jupyter/jupyter_notebook_config.py /etc/jupyter/
+
+# update permissions
+RUN chmod a+rx /usr/local/bin/fix-permissions
+RUN chmod +rx /usr/local/bin/start*
+RUN chmod +rx /etc/jupyter/jupyter_notebook_config.py
 
 # copy rstudio configuration
 COPY rserver.conf /etc/rstudio/rserver.conf
-COPY rsession.conf /etc/rstudio/rsession.conf
 
 # Fix permissions on /etc/jupyter and /etc/rstudio as root
-RUN fix-permissions /etc/rstudio/ \
- && fix-permissions /etc/jupyter/ \
+RUN fix-permissions /etc/jupyter/ \
+ && fix-permissions /etc/rstudio/ \
  && fix-permissions "${HOME}"
 
-USER "${NB_USER}"
+USER "${NB_UID}"

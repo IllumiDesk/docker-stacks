@@ -41,6 +41,9 @@ build/%: ## build the latest image for a stack
 
 build-all: $(foreach I,$(ALL_IMAGES), build/$(I) ) ## build all stacks
 
+clean-all: ## clean all docker containers
+	@docker rm -f $(docker ps -aq)
+
 dev/%: ARGS?=
 dev/%: DARGS?=
 dev/%: PORT?=8888
