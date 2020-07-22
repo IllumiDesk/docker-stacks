@@ -1,11 +1,11 @@
-FROM illumidesk/base-notebook AS base
+FROM illumidesk/base-notebook:latest AS base
 
-FROM illumidesk/rstudio:base-f2de174cc427
+FROM illumidesk/r-conda:latest
 
 ENV NB_USER=jovyan
 ENV NB_UID=1000
 ENV NB_GID=100
-ENV HOME=/home/$NB_USER
+ENV HOME="/home/${NB_USER}"
 
 USER root
 
@@ -27,6 +27,6 @@ COPY rserver.conf /etc/rstudio/rserver.conf
 # Fix permissions on /etc/jupyter and /etc/rstudio as root
 RUN fix-permissions /etc/jupyter/ \
  && fix-permissions /etc/rstudio/ \
- && fix-permissions /home/$NB_USER
+ && fix-permissions "${HOME}"
 
-USER $NB_USER
+USER "${NB_UID}"

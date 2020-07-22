@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/IllumiDesk/docker-stacks.svg?branch=main)](https://travis-ci.com/IllumiDesk/docker-stacks)
+
 # IllumiDesk docker-stacks
 
 Dockerfiles and related assets for IllumiDesk's workspace images.
@@ -18,19 +20,34 @@ make build-all
 
 2. Run:
 
-Running the image standalone is helpful for testing. Refer to the sections below to ensure the images have the required assets to run with the IllumiDesk stack.
+Running the image standalone is helpful for testing:
 
 ```bash
-docker run -p 8888:8888 illumidesk/datascience-notebook
+docker run -p 8888:8888 illumidesk/base-notebook:latest
 ```
 
 > Refer to [docker's documentation](https://docs.docker.com/engine/reference/run/) for additional `docker run ...` options.
 
 ## Image catalogue
 
+| Image | DockerHub Link |
+| --- | --- |
+| illumidesk/base-notebook | [![Docker Image](https://img.shields.io/docker/automated/illumidesk/base-notebook)](https://img.shields.io/docker/automated/illumidesk/base-notebook?label=base-notebook) |
+| illumidesk/grader-notebook | [![Docker Image](https://img.shields.io/docker/automated/illumidesk/grader-notebook)](https://hub.docker.com/repository/docker/illumidesk/base-notebook?label=grader-notebook) |
+| illumidesk/instructor-notebook | [![Docker Image](https://img.shields.io/docker/automated/illumidesk/instructor-notebook)](https://hub.docker.com/repository/docker/illumidesk/instructor-notebook?label=instructor-notebook) |
+| illumidesk/learner-notebook | [![Docker Image](https://img.shields.io/docker/automated/illumidesk/learner-notebook)](https://hub.docker.com/repository/docker/illumidesk/learner-notebook?label=learner-notebook) |
+| illumidesk/rstudio | [![Docker Image](https://img.shields.io/docker/automated/illumidesk/rstudio)](https://hub.docker.com/repository/docker/illumidesk/rstudio?label=rstudio) |
+| illumidesk/theia | [![Docker Image](https://img.shields.io/docker/automated/illumidesk/theia)](https://hub.docker.com/repository/docker/illumidesk/theia?label=theia) |
+| illumidesk/vscode | [![Docker Image](https://img.shields.io/docker/automated/illumidesk/vscode)](https://hub.docker.com/repository/docker/illumidesk/vscode?label=vscode) |
+
 ### Images prepared for Learning Tools Interoperability (LTI) Roles
 
-- **Base Jupyter Notebook**: based on the [`jupyter/datascience-notebook`](https://github.com/jupyter/docker-stacks/tree/master/datascience-notebook) image + `Java kernel`.
+- **Base Jupyter Notebook**: based on the [`jupyter/datascience-notebook`](https://github.com/jupyter/docker-stacks/tree/master/datascience-notebook) plus:
+
+  - Java kernel using JRE based on Open JDK 11
+  - Julia, Python, and R packages installed with files (install.jl, requirements.txt, environment.yml, respectively).
+  - Jupyter Notebook configuration to support iFrames
+
 - **Learner Jupyter Notebook**: adds `nbgrader` extensions for the `learner` role.
 - **Instructor Jupyter Notebook**: adds `nbgrader` extensions for the `instructor` role.
 - **Grader Jupyter Notebook**: adds `nbgrader` extensions for the shared `grader` notebook.
