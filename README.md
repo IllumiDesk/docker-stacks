@@ -60,7 +60,7 @@ The IllumiDesk docker layers for grader images are illustrated below:
 
 - **THEIA IDE**: basic version of the THEIA IDE. `THEIA` is highly configurable, refer to [their documention](https://github.com/eclipse-theia/theia#documentation) for customization options (mostly done via package.json modifications).
 - **VS Code**: this image contains the `code-server` VS Code distribution optimized for `docker`.
-- **RStudio**: uses [`binder-examples/r-conda`](https://github.com/binder-examples/r-conda) as a base image.
+- **RStudio**: uses [`illumidesk/r-conda`](https://github.com/illumidesk/r-conda) as a base image.
 
 The IllumiDesk docker layers for workspace types are illustrated below:
 
