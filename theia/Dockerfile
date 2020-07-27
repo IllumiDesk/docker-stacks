@@ -49,14 +49,11 @@ USER root
 
 WORKDIR /tmp
 
-# Set the SHELL to bash with pipefail option
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-
 COPY --from=builder /theia-app/illumidesk-theia_0.0.2_all.deb /tmp/
 RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - \
  && apt-get install -y /tmp/illumidesk-theia_0.0.2_all.deb \
  && rm /tmp/illumidesk-theia_0.0.2_all.deb
-
+ 
 ## NVM
 # https://stackoverflow.com/questions/25899912/how-to-install-nvm-in-docker
 
@@ -71,15 +68,20 @@ RUN mkdir -p $NVM_DIR \
  && nvm alias default "${NODE_VERSION}" \
  && nvm use default
 
-USER $NB_USER
+USER "${NB_USER}"
 
-WORKDIR $HOME
+WORKDIR "${HOME}"
 
 COPY requirements.txt requirements.txt
 RUN python3 -m pip install -r requirements.txt \
- && rm requirements.txt \
- && fix-permissions "${CONDA_DIR}" \
- && fix-permissions "/home/${NB_USER}"
+ && rm requirements.txt
+
+# fix conda and home directory permissions as root
+USER root
+RUN fix-permissions "${CONDA_DIR}" \
+ && fix-permissions "${HOME}"
+
+USER "${NB_USER}"
 
 RUN jupyter serverextension enable --sys-prefix --py jupyter_server_proxy \
  && jupyter labextension install @jupyterlab/server-proxy \

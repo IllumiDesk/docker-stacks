@@ -60,7 +60,7 @@ The IllumiDesk docker layers for grader images are illustrated below:
 
 - **THEIA IDE**: basic version of the THEIA IDE. `THEIA` is highly configurable, refer to [their documention](https://github.com/eclipse-theia/theia#documentation) for customization options (mostly done via package.json modifications).
 - **VS Code**: this image contains the `code-server` VS Code distribution optimized for `docker`.
-- **RStudio**: uses [`binder-examples/r-conda`](https://github.com/binder-examples/r-conda) as a base image.
+- **RStudio**: uses [`illumidesk/r-conda`](https://github.com/illumidesk/r-conda) as a base image.
 
 The IllumiDesk docker layers for workspace types are illustrated below:
 
@@ -71,9 +71,7 @@ The IllumiDesk docker layers for workspace types are illustrated below:
 1. Build and tag the base image
 
 ```bash
-    docker build -t illumidesk/datascience-notebook:latest \
-      -f notebooks/Dockerfile.base \
-      notebooks/.
+    make build/base-image
 ```
 
 2. Use the base image from step 1 above as:
@@ -81,15 +79,17 @@ The IllumiDesk docker layers for workspace types are illustrated below:
   a) A base image and add additional layers to said image to create your own custom image
 
 ```
-FROM illumidesk/datascience-notebook:latest
+FROM illumidesk/base-notebook:latest
 
 RUN ...
 ```
 
+or
+
   b) A source image for files necessary to use image with the [IllumiDesk](https://github.com/IllumiDesk/illumidesk) stack.
 
 ```
-FROM illumidesk/datascience-notebook:latest AS base
+FROM illumidesk/base-notebook:latest AS base
 
 FROM acme/image:tag
 
@@ -101,6 +101,24 @@ RUN ...
 ```
 
 3. Push images to DockerHub
+
+```bash
+docker push organization/custom-image
+```
+
+## Testing
+
+Tests start the docker container(s), runs commands by emulating the  `docker exec ...` command, and asserts the outputs. You can run tests on one image or all images:
+
+```bash
+make test/base-notebook
+```
+
+or
+
+```bash
+make test-all
+```
 
 ## References
 
