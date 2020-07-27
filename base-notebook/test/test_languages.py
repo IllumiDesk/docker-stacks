@@ -14,7 +14,7 @@ LOGGER = logging.getLogger(__name__)
     [
         ('java', ['openjdk', '11.0.7', '2020-04-14\nOpenJDK',],),
         ('julia', ['julia', 'version', '1.4.1\n']),
-        ('python', ['Python', '3.7.6\n']),
+        ('python', ['Python', '3.7.8\n']),
         ('R', ['R', 'version', '3.6.3',],),
     ],
 )
