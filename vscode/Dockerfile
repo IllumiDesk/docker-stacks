@@ -1,25 +1,26 @@
-ARG BASE_IMAGE=illumidesk/base-notebook:v0.1.3
+ARG BASE_IMAGE=illumidesk/base-notebook:v0.1.4
 FROM $BASE_IMAGE
 
 USER root
 
-# Set the SHELL to bash with pipefail option
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+WORKDIR /tmp
 
 RUN curl -fsSL https://code-server.dev/install.sh | sh
 
-USER $NB_USER
+COPY requirements.txt /tmp/requirements.txt
+RUN python3 -m pip install -r /tmp/requirements.txt \
+ && rm /tmp/requirements.txt
 
-WORKDIR $HOME
+# Build lab extensions that may have been included
+RUN jupyter lab build
 
-COPY requirements.txt requirements.txt
-RUN python3 -m pip install -r requirements.txt \
- && rm requirements.txt \
+# fix conda, /etc/jupyter and home directory permissions as root
+RUN fix-permissions /etc/jupyter \
  && fix-permissions "${CONDA_DIR}" \
- && fix-permissions "/home/${NB_USER}"
-
-RUN jupyter serverextension enable --sys-prefix --py jupyter_server_proxy \
- && jupyter labextension install @jupyterlab/server-proxy \
- && jupyter lab build
+ && fix-permissions "${HOME}"
 
 EXPOSE 8080
+
+USER "${NB_UID}"
+
+WORKDIR "${HOME}"

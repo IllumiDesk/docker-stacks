@@ -33,7 +33,7 @@ RUN yarn \
 RUN npm run build-deb
 
 # transfer debian package to a new clean image and install theia
-FROM illumidesk/base-notebook:v0.1.3
+FROM illumidesk/base-notebook:v0.1.4
 
 ENV NODE_OPTIONS="--max_old_space_size=4096"
 ENV NODE_VERSION=10.21.0
@@ -56,33 +56,29 @@ RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - \
  
 ## NVM
 # https://stackoverflow.com/questions/25899912/how-to-install-nvm-in-docker
-
 # Set debconf to run non-interactively
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
 # Install nvm with node and npm
-RUN mkdir -p $NVM_DIR \
+RUN mkdir -p "${NVM_DIR}" \
  && curl "https://raw.githubusercontent.com/creationix/nvm/v${NVM_VERSION}/install.sh" | sudo -E bash \
  && . "${NVM_DIR}/nvm.sh" \
  && nvm install "${NODE_VERSION}" \
  && nvm alias default "${NODE_VERSION}" \
  && nvm use default
 
-USER "${NB_USER}"
+COPY requirements.txt /tmp/requirements.txt
+RUN python3 -m pip install -r /tmp/requirements.txt \
+ && rm /tmp/requirements.txt
 
-WORKDIR "${HOME}"
+# Build lab extensions that may have been included
+RUN jupyter lab build
 
-COPY requirements.txt requirements.txt
-RUN python3 -m pip install -r requirements.txt \
- && rm requirements.txt
-
-# fix conda and home directory permissions as root
-USER root
-RUN fix-permissions "${CONDA_DIR}" \
+# fix conda, /etc/jupyter and home directory permissions as root
+RUN fix-permissions /etc/jupyter \
+ && fix-permissions "${CONDA_DIR}" \
  && fix-permissions "${HOME}"
 
-USER "${NB_USER}"
+USER "${NB_UID}"
 
-RUN jupyter serverextension enable --sys-prefix --py jupyter_server_proxy \
- && jupyter labextension install @jupyterlab/server-proxy \
- && jupyter lab build
+WORKDIR "${HOME}"

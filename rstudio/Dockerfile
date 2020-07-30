@@ -1,4 +1,4 @@
-FROM illumidesk/base-notebook:v0.1.3 AS base
+FROM illumidesk/base-notebook:v0.1.4 AS base
 
 FROM illumidesk/r-conda:latest
 
@@ -29,4 +29,9 @@ RUN fix-permissions /etc/jupyter/ \
  && fix-permissions /etc/rstudio/ \
  && fix-permissions "${HOME}"
 
+# Build lab extensions that may have been included
+RUN jupyter lab build
+
 USER "${NB_UID}"
+
+WORKDIR "${HOME}"
