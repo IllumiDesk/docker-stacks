@@ -121,7 +121,7 @@ Tests start the docker container(s), runs commands by emulating the  `docker exe
 make test/base-notebook TAG=mytag
 ```
 
-or
+or (using default `latest` tag):
 
 ```bash
 make test-all

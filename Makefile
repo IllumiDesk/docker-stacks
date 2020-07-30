@@ -22,6 +22,11 @@ ALL_STACKS:=base-notebook \
 
 ALL_IMAGES:=$(ALL_STACKS)
 
+ALL_TEST_IMAGES:=base-notebook \
+	rstudio \
+	theia \
+	vscode
+
 # Linter
 HADOLINT="${HOME}/hadolint"
 
@@ -84,4 +89,4 @@ test/%: ## run tests against a stack (only common tests or common tests + specif
 	@if [ ! -d "$(notdir $@)/test" ]; then TEST_IMAGE="$(OWNER)/$(notdir $@):$(TAG)" pytest -m "not info" test; \
 	else TEST_IMAGE="$(OWNER)/$(notdir $@)" pytest -m "not info" test $(notdir $@)/test; fi
 
-test-all: $(foreach I,$(ALL_IMAGES),test/$(I)) ## test all stacks
+test-all: $(foreach I,$(ALL_TEST_IMAGES),test/$(I)) ## test all stacks
