@@ -14,9 +14,9 @@ c.NotebookApp.port = 8888
 c.NotebookApp.open_browser = False
 c.NotebookApp.tornado_settings = {"headers": {"Content-Security-Policy": "frame-ancestors 'self' *"}}
 c.NotebookApp.allow_root = True
-c.NotebookApp.allow_origin = "*"
-c.NotebookApp.token = ""
-c.NotebookApp.token = "/lab"
+c.NotebookApp.allow_origin = '*'
+c.NotebookApp.token = ''
+c.NotebookApp.default_url = '/lab'
 
 # https://github.com/jupyter/notebook/issues/3130
 c.FileContentsManager.delete_to_trash = False
