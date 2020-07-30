@@ -107,7 +107,7 @@ RUN jupyter serverextension enable --sys-prefix --py jupyter_server_proxy \
  && jupyter lab build
 
 # Copy configs
-COPY jupyter_notebook_config.py global_nbgrader_config.py /etc/jupyter/
+COPY jupyter_notebook_config_base.py jupyter_notebook_config.py global_nbgrader_config.py /etc/jupyter/
 
 # create globally available exchange directory and fix permissions as root
 RUN mkdir -p /srv/nbgrader/exchange \
