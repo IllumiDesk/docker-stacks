@@ -24,6 +24,9 @@ RUN chmod +rx /etc/jupyter/jupyter_notebook_config.py
 # copy rstudio configuration
 COPY rserver.conf /etc/rstudio/rserver.conf
 
+# copy jupyter notebook config
+COPY jupyter_notebook_config.py /etc/jupyter/jupyter_notebook_config.py
+
 # Fix permissions on /etc/jupyter and /etc/rstudio as root
 RUN fix-permissions /etc/jupyter/ \
  && fix-permissions /etc/rstudio/ \

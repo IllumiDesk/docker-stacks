@@ -14,6 +14,9 @@ RUN python3 -m pip install -r /tmp/requirements.txt \
 # Build lab extensions that may have been included
 RUN jupyter lab build
 
+# copy jupyter notebook config
+COPY jupyter_notebook_config.py /etc/jupyter/jupyter_notebook_config.py
+
 # fix conda, /etc/jupyter and home directory permissions as root
 RUN fix-permissions /etc/jupyter \
  && fix-permissions "${CONDA_DIR}" \
