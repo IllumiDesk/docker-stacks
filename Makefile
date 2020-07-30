@@ -83,10 +83,3 @@ lint-install: ## install hadolint
 venv:
 	test -d $(VENV_NAME) || virtualenv -p python3 $(VENV_NAME)
 	${PYTHON} -m pip install -r dev-requirements.txt
-
-test/%: TAG?=
-test/%: ## run tests against a stack (only common tests or common tests + specific tests)
-	@if [ ! -d "$(notdir $@)/test" ]; then TEST_IMAGE="$(OWNER)/$(notdir $@):$(TAG)" pytest -m "not info" test; \
-	else TEST_IMAGE="$(OWNER)/$(notdir $@)" pytest -m "not info" test $(notdir $@)/test; fi
-
-test-all: $(foreach I,$(ALL_TEST_IMAGES),test/$(I)) ## test all stacks
