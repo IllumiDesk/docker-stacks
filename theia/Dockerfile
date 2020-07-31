@@ -49,10 +49,10 @@ USER root
 
 WORKDIR /tmp
 
-COPY --from=builder /theia-app/illumidesk-theia_0.0.2_all.deb /tmp/
+COPY --from=builder /theia-app/illumidesk-theia_0.1.0_all.deb /tmp/
 RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - \
- && apt-get install -y /tmp/illumidesk-theia_0.0.2_all.deb \
- && rm /tmp/illumidesk-theia_0.0.2_all.deb
+ && apt-get install -y /tmp/illumidesk-theia_0.1.0_all.deb \
+ && rm /tmp/illumidesk-theia_0.1.0_all.deb
  
 ## NVM
 # https://stackoverflow.com/questions/25899912/how-to-install-nvm-in-docker

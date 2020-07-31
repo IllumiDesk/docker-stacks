@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=jupyter/datascience-notebook:76402a27fd13
+ARG BASE_IMAGE=jupyter/datascience-notebook:acb539921413
 FROM $BASE_IMAGE
 
 ARG JHUB_HASH_COMMIT=f3c3225124f1c5d9acb2503ec4d9c35a140f6a78
