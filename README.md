@@ -68,11 +68,18 @@ The IllumiDesk docker layers for workspace types are illustrated below:
 
 ## Build Mechanism
 
-1. Build and tag the base image
+1. Build and tag the base image or all images at once:
 
 ```bash
-    make build/base-image
+    make build/base-image TAG=mytag
 ```
+
+or
+
+```bash
+    make build-all TAG=mytag
+```
+
 
 2. Use the base image from step 1 above as:
 
@@ -108,13 +115,13 @@ docker push organization/custom-image
 
 ## Testing
 
-Tests start the docker container(s), runs commands by emulating the  `docker exec ...` command, and asserts the outputs. You can run tests on one image or all images:
+Tests start the docker container(s), runs commands by emulating the  `docker exec ...` command, and asserts the outputs. You can run tests on one image or all images. Use the `TAG` key to specify a docker image tag to test (TAG defaults to `latest`):
 
 ```bash
-make test/base-notebook
+make test/base-notebook TAG=mytag
 ```
 
-or
+or (using default `latest` tag):
 
 ```bash
 make test-all

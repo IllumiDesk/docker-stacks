@@ -49,40 +49,39 @@ USER root
 
 WORKDIR /tmp
 
-COPY --from=builder /theia-app/illumidesk-theia_0.0.2_all.deb /tmp/
+COPY --from=builder /theia-app/illumidesk-theia_0.1.0_all.deb /tmp/
 RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - \
- && apt-get install -y /tmp/illumidesk-theia_0.0.2_all.deb \
- && rm /tmp/illumidesk-theia_0.0.2_all.deb
+ && apt-get install -y /tmp/illumidesk-theia_0.1.0_all.deb \
+ && rm /tmp/illumidesk-theia_0.1.0_all.deb
  
 ## NVM
 # https://stackoverflow.com/questions/25899912/how-to-install-nvm-in-docker
-
 # Set debconf to run non-interactively
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
 # Install nvm with node and npm
-RUN mkdir -p $NVM_DIR \
+RUN mkdir -p "${NVM_DIR}" \
  && curl "https://raw.githubusercontent.com/creationix/nvm/v${NVM_VERSION}/install.sh" | sudo -E bash \
  && . "${NVM_DIR}/nvm.sh" \
  && nvm install "${NODE_VERSION}" \
  && nvm alias default "${NODE_VERSION}" \
  && nvm use default
 
-USER "${NB_USER}"
+COPY requirements.txt /tmp/requirements.txt
+RUN python3 -m pip install -r /tmp/requirements.txt \
+ && rm /tmp/requirements.txt
 
-WORKDIR "${HOME}"
+# Build lab extensions that may have been included
+RUN jupyter lab build
 
-COPY requirements.txt requirements.txt
-RUN python3 -m pip install -r requirements.txt \
- && rm requirements.txt
+# copy jupyter notebook config
+COPY jupyter_notebook_config.py /etc/jupyter/jupyter_notebook_config.py
 
-# fix conda and home directory permissions as root
-USER root
-RUN fix-permissions "${CONDA_DIR}" \
+# fix conda, /etc/jupyter and home directory permissions as root
+RUN fix-permissions /etc/jupyter \
+ && fix-permissions "${CONDA_DIR}" \
  && fix-permissions "${HOME}"
 
-USER "${NB_USER}"
+USER "${NB_UID}"
 
-RUN jupyter serverextension enable --sys-prefix --py jupyter_server_proxy \
- && jupyter labextension install @jupyterlab/server-proxy \
- && jupyter lab build
+WORKDIR "${HOME}"

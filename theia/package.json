@@ -1,28 +1,28 @@
 {
     "name": "illumidesk-theia",
-    "version": "0.0.2",
+    "version": "0.1.0",
     "license": "EPL-2.0",
     "description": "IllumiDesk Theia IDE",
     "engines": {
         "node": "10.x"
     },
     "dependencies": {
-        "@theia/callhierarchy": "latest",
-        "@theia/file-search": "latest",
-        "@theia/json": "latest",
-        "@theia/markers": "latest",
-        "@theia/messages": "latest",
-        "@theia/mini-browser": "latest",
-        "@theia/navigator": "latest",
-        "@theia/outline-view": "latest",
-        "@theia/preferences": "latest",
-        "@theia/preview": "latest",
-        "@theia/search-in-workspace": "latest",
-        "@theia/terminal": "latest",
-        "typescript": "latest"
+        "@theia/callhierarchy": "1.4.0",
+        "@theia/file-search": "1.4.0",
+        "@theia/json": "1.3.0",
+        "@theia/markers": "1.4.0",
+        "@theia/messages": "1.4.0",
+        "@theia/mini-browser": "1.4.0",
+        "@theia/navigator": "1.4.0",
+        "@theia/outline-view": "1.4.0",
+        "@theia/preferences": "1.4.0",
+        "@theia/preview": "1.4.0",
+        "@theia/search-in-workspace": "1.4.0",
+        "@theia/terminal": "1.4.0",
+        "typescript": "3.9.7"
     },
     "devDependencies": {
-        "@theia/cli": "latest"
+        "@theia/cli": "1.4.0"
     },
     "resolutions": {
         "vscode-json-languageserver": "1.2.3",
