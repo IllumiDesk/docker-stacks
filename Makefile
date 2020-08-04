@@ -3,6 +3,7 @@
 
 # Use bash for inline if-statements in target
 SHELL:=bash
+TAG:=latest
 OWNER:=illumidesk
 VENV_NAME?=venv
 VENV_BIN=$(shell pwd)/${VENV_NAME}/bin
@@ -21,6 +22,11 @@ ALL_STACKS:=base-notebook \
 
 ALL_IMAGES:=$(ALL_STACKS)
 
+ALL_TEST_IMAGES:=base-notebook \
+	rstudio \
+	theia \
+	vscode
+
 # Linter
 HADOLINT="${HOME}/hadolint"
 
@@ -34,12 +40,13 @@ help:
 	@grep -E '^[a-zA-Z0-9_%/-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 build/%: DARGS?=
+build/%: TAG?=
 build/%: ## build the latest image for a stack
-	docker build $(DARGS) --rm --force-rm -t $(OWNER)/$(notdir $@):latest ./$(notdir $@)
+	docker build $(DARGS) --rm --force-rm -t $(OWNER)/$(notdir $@):$(TAG) ./$(notdir $@)
 	@echo -n "Built image size: "
 	@docker images $(OWNER)/$(notdir $@):latest --format "{{.Size}}"
 
-build-all: $(foreach I,$(ALL_IMAGES), build/$(I) ) ## build all stacks
+build-all: $(foreach I,$(ALL_IMAGES), build/$(I)) ## build all stacks
 
 clean-all: ## clean all docker containers
 	@docker rm -f $(docker ps -aq)
@@ -76,9 +83,3 @@ lint-install: ## install hadolint
 venv:
 	test -d $(VENV_NAME) || virtualenv -p python3 $(VENV_NAME)
 	${PYTHON} -m pip install -r dev-requirements.txt
-
-test/%: ## run tests against a stack (only common tests or common tests + specific tests)
-	@if [ ! -d "$(notdir $@)/test" ]; then TEST_IMAGE="$(OWNER)/$(notdir $@)" pytest -m "not info" test; \
-	else TEST_IMAGE="$(OWNER)/$(notdir $@)" pytest -m "not info" test $(notdir $@)/test; fi
-
-test-all: $(foreach I,$(ALL_IMAGES),test/$(I)) ## test all stacks

@@ -1,10 +1,12 @@
-ARG BASE_IMAGE=jupyter/datascience-notebook:76402a27fd13
+ARG BASE_IMAGE=jupyter/datascience-notebook:acb539921413
 FROM $BASE_IMAGE
 
 ARG JHUB_HASH_COMMIT=f3c3225124f1c5d9acb2503ec4d9c35a140f6a78
 
 ENV JHUB_CONFIG=$JHUB_CONFIG
 ENV JHUB_HASH_COMMIT=$JHUB_HASH_COMMIT
+ENV JUPYTER_ENABLE_LAB=yes
+ENV RESTARTABLE=yes
 
 USER root
 
@@ -32,6 +34,11 @@ RUN apt-get update \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
+# ensure we have conda>=4.8.3
+# https://docs.conda.io/projects/conda/en/latest/release-notes.html#bug-fixes
+RUN conda update -n base conda -y \
+ && fix-permissions "${CONDA_DIR}"
+
 WORKDIR /tmp
 
 ## Install additional kernels
@@ -46,50 +53,37 @@ RUN rm -rf IJava/ \
  && fix-permissions "${HOME}" \
  && fix-permissions "${CONDA_DIR}"
 
-USER "${NB_UID}"
+# install julia packages
+COPY install.jl /tmp/install.jl
+RUN julia /tmp/install.jl \
+ && fix-permissions "${JULIA_PKGDIR}" \
+ && fix-permissions "${HOME}" \
+ && rm /tmp/install.jl
 
-WORKDIR "${HOME}"
-
-# ensure we have conda>=4.8.3
-# https://docs.conda.io/projects/conda/en/latest/release-notes.html#bug-fixes
-RUN conda update -n base conda -y \
- && fix-permissions "${CONDA_DIR}"
+# install r packages
+COPY environment.yml /tmp/environment.yml
+RUN conda env update --name base --file /tmp/environment.yml --prune \
+ && conda clean --all -f -y \
+ && fix-permissions "${CONDA_DIR}" \
+ && fix-permissions "${HOME}" \
+ && rm /tmp/environment.yml \
+ && conda clean --all -f -y
 
 # install python packages
-COPY requirements.txt "${HOME}/requirements.txt"
-RUN python3 -m pip install --no-cache -r requirements.txt \
- && rm "${HOME}/requirements.txt" \
+COPY requirements.txt /tmp/requirements.txt
+RUN python3 -m pip install --no-cache -r /tmp/requirements.txt \
+ && rm /tmp/requirements.txt \
  && fix-permissions "${CONDA_DIR}" \
  && fix-permissions "${HOME}" \
  && conda clean --all -f -y
 
-# install r packages
-COPY environment.yml "${HOME}/environment.yml"
-RUN conda env update --name base --file "${HOME}/environment.yml" --prune \
- && conda clean --all -f -y \
- && fix-permissions "${CONDA_DIR}" \
- && fix-permissions "${HOME}" \
- && rm "${HOME}/environment.yml"
-
-# install julia packages
-COPY install.jl "${HOME}/install.jl"
-RUN julia install.jl \
- && fix-permissions "${JULIA_PKGDIR}" \
- && fix-permissions "${HOME}" \
- && rm "${HOME}/install.jl"
-
 # Update JupyterHub version, so that its consistent with JupyterHub
 RUN git clone https://github.com/jupyterhub/jupyterhub
-WORKDIR "${HOME}/jupyterhub"
+WORKDIR /tmp/jupyterhub
 RUN git checkout -b build "${JHUB_HASH_COMMIT}" \
- && python3 -m pip install . \
- && rm -Rf "${HOME}/jupyterhub"
-
-# install plotly-orca with npm globally
-# TODO: move npm dependencies to package.json
-RUN npm install -g \
-  electron@6.1.4 \
-  orca
+ && python3 -m pip install .
+WORKDIR /tmp
+RUN rm -Rf jupyterhub
 
 # enable classic notebook extensions
 # https://jupyter-contrib-nbextensions.readthedocs.io/en/latest/install.html
@@ -106,8 +100,16 @@ RUN jupyter nbextension install --symlink --sys-prefix --py nbgrader --overwrite
 RUN jupyter nbextension enable --sys-prefix validate_assignment/main --section=notebook && \
     jupyter serverextension enable --sys-prefix nbgrader.server_extensions.validate_assignment
 
+# Install the jupyter-server-proxy extension and ensure we build
+# any additional lab extensions
+RUN jupyter serverextension enable --sys-prefix --py jupyter_server_proxy \
+ && jupyter labextension install @jupyterlab/server-proxy \
+ && jupyter lab build
+
+# Copy configs
+COPY jupyter_notebook_config_base.py jupyter_notebook_config.py global_nbgrader_config.py /etc/jupyter/
+
 # create globally available exchange directory and fix permissions as root
-USER root
 RUN mkdir -p /srv/nbgrader/exchange \
  && fix-permissions /srv/nbgrader/exchange \
  && fix-permissions /etc/jupyter \
@@ -117,4 +119,5 @@ RUN mkdir -p /srv/nbgrader/exchange \
 # set container to run with $NB_UID and ensure we land in home directory
 USER "${NB_UID}"
 
+# users start in their home root directory
 WORKDIR "${HOME}"
