@@ -110,6 +110,10 @@ RUN jupyter serverextension enable --sys-prefix --py jupyter_server_proxy \
 # Copy configs
 COPY jupyter_notebook_config_base.py jupyter_notebook_config.py global_nbgrader_config.py /etc/jupyter/
 
+# copy start script hook
+COPY update-extensions.sh /usr/local/bin/before-notebook.d/
+RUN chmod +rx /usr/local/bin/before-notebook.d/
+
 # create globally available exchange directory and fix permissions as root
 RUN mkdir -p /srv/nbgrader/exchange \
  && fix-permissions /srv/nbgrader/exchange \
@@ -117,7 +121,7 @@ RUN mkdir -p /srv/nbgrader/exchange \
  && fix-permissions "${HOME}" \
  && fix-permissions "${CONDA_DIR}"
 
-# set container to run with $NB_UID and ensure we land in home directory
+# set container to run with $NB_UID
 USER "${NB_UID}"
 
 # users start in their home root directory
