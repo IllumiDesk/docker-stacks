@@ -91,7 +91,8 @@ RUN jupyter contrib nbextension install --sys-prefix
 
 # nbgrader
 # Install global extensions, and disable them globally. We will re-enable
-# specific ones for different role-based images
+# specific ones for different role-based images with the update-extensions.sh script after
+# getting the USER_ROLE environment variable
 RUN jupyter nbextension install --symlink --sys-prefix --py nbgrader --overwrite \
  && jupyter nbextension disable --sys-prefix --py nbgrader \
  && jupyter serverextension disable --sys-prefix --py nbgrader
