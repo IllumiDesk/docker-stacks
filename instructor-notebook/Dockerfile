@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=illumidesk/base-notebook:v0.1.4
+ARG BASE_IMAGE=illumidesk/base-notebook:v0.1.5
 FROM $BASE_IMAGE
 
 ARG USER_ROLE=Instructor

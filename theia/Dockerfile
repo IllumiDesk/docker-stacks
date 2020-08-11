@@ -33,7 +33,7 @@ RUN yarn \
 RUN npm run build-deb
 
 # transfer debian package to a new clean image and install theia
-FROM illumidesk/base-notebook:v0.1.4
+FROM illumidesk/base-notebook:v0.1.5
 
 ENV NODE_OPTIONS="--max_old_space_size=4096"
 ENV NODE_VERSION=10.21.0
