@@ -1,4 +1,4 @@
-FROM illumidesk/base-notebook:v0.1.5 AS base
+FROM illumidesk/base-notebook:latest AS base
 
 FROM illumidesk/r-conda:latest
 
