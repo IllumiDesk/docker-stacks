@@ -28,9 +28,3 @@ if [[ "${USER_ROLE}" == "Student" ]] || [[ "${USER_ROLE}" == "Learner" ]]; then
     echo "Enabling nbgrader extensions for Student/Learner role"
     install_student_extensions
 fi
-
-if [[ "${USER_ROLE}" == "Grader" ]]; then
-    echo "Enabling nbgrader extensions for Grader role"
-    install_grader_extensions
-fi
-

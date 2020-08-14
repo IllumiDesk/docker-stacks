@@ -1,0 +1,73 @@
+#!/bin/bash
+
+install_java_kernel () {
+    # install java kernel
+    cd /tmp
+    git clone https://github.com/frankfliu/IJava.git
+    cd /tmp/IJava
+    ./gradlew installKernel
+    # cleanup
+    cd /tmp
+    rm -rf IJava/
+    rm -rf ~/.gradle \
+    fix-permissions "${HOME}" \
+    fix-permissions "${CONDA_DIR}"
+}
+
+enable_classicextensions () {
+    # community extensions
+    jupyter contrib nbextension install --sys-prefix
+    # widgets
+    jupyter nbextension enable --py widgetsnbextension --sys-prefix
+    # jupyter-server-proxy
+    jupyter serverextension enable --py jupyter_server_proxy
+    # install nbgrader and then disable all extensions by default
+    jupyter nbextension install --symlink --sys-prefix --py nbgrader --overwrite \
+ && jupyter nbextension disable --sys-prefix --py nbgrader \
+ && jupyter serverextension disable --sys-prefix --py nbgrader
+    # everyone gets the nbgrader validate extension
+    jupyter nbextension enable --sys-prefix validate_assignment/main --section=notebook \
+ && jupyter serverextension enable --sys-prefix nbgrader.server_extensions.validate_assignment
+}
+
+install_labextensions () {
+    # Add lab extensions for JupyterLab
+    jupyter labextension install @jupyterlab/server-proxy --no-build
+    jupyter labextension install @jupyter-widgets/jupyterlab-manager@^2.0.0 --no-build
+    jupyter labextension install @bokeh/jupyter_bokeh@^2.0.0 --no-build
+    jupyter labextension install jupyter-matplotlib@^0.7.2 --no-build
+}
+
+build_and_clean () {
+    # Build all installed extensions, then clean things up
+    jupyter lab build -y
+    jupyter lab clean -y
+    npm cache clean --force
+}
+
+cleanup_home () {
+    # delete items explicitly since we don't want to delete hidden files/folders
+    # such as the .jupyter or .local folders
+    rm -rf "/home/${NB_USER}/.cache/yarn"
+    rm -rf "/home/${NB_USER}/.node-gyp"
+    rm -rf "/home/${NB_USER}/apt.txt"
+    rm -rf "/home/${NB_USER}/npm*"
+    rm -rf "/home/${NB_USER}/environment.yml*"
+    rm -rf "/home/${NB_USER}/Manifest.toml*"
+    rm -rf "/home/${NB_USER}/postBuild*"
+    rm -rf "/home/${NB_USER}/Project.toml*"
+}
+
+fix_permissions () {
+    fix-permissions "${CONDA_DIR}"
+    fix-permissions "${HOME}"
+}
+
+main () {
+    install_java_kernel
+    enable_classicextensions
+    install_labextensions
+    build_and_clean
+    cleanup_home
+    fix_permissions
+}
