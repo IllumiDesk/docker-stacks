@@ -36,7 +36,7 @@ build/%: TAG?=
 build/%: ## build the latest image for a stack
 	jupyter-repo2docker --no-run --user-id 1000 --user-name jovyan --image-name $(OWNER)/$(notdir $@):$(TAG) ./$(notdir $@) .
 	@echo -n "Built image size: "
-	@docker images $(OWNER)/$(notdir $@):latest --format "{{.Size}}"
+	@docker images $(OWNER)/$(notdir $@):$(TAG) --format "{{.Size}}"
 
 build-all: $(foreach I,$(ALL_IMAGES), build/$(I)) ## build all stacks
 
