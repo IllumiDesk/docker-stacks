@@ -1,6 +1,6 @@
 FROM jupyter/base-notebook:7e2f380b1792 AS base
 
-FROM illumidesk/illumidesk-notebook:latest
+FROM illumidesk/base-notebook:latest
 
 # add since its not included by repo2docker but we need it
 # to run fix-permissions
