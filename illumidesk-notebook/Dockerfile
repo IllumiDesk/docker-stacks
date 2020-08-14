@@ -35,7 +35,7 @@ RUN mkdir -p /usr/local/bin/start-notebook.d \
  && mkdir -p /usr/local/bin/before-notebook.d
 
 # copy script to enable nbgrader extensions based on role
-COPY install_enable_extensions.sh /usr/local/bin/before-notebook.d/
+COPY enable_extensions.sh /usr/local/bin/before-notebook.d/
 RUN chmod +rx -Rf /usr/local/bin/before-notebook.d/
 
 # copy configs, we use our own to provide a base jhub config and an additional
