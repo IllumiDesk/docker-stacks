@@ -13,12 +13,6 @@ install_student_extensions() (
     jupyter nbextension enable --sys-prefix assignment_list/main --section=tree
 )
 
-install_grader_extensions() (
-    jupyter nbextension enable --sys-prefix create_assignment/main
-    jupyter nbextension enable --sys-prefix formgrader/main --section=tree
-    jupyter serverextension enable --sys-prefix nbgrader.server_extensions.formgrader
-)
-
 if [[ "${USER_ROLE}" == "Instructor" ]] || [[ "${USER_ROLE}" == "TeachingAssistant" ]]; then
     echo "Enabling nbgrader extensions for Instructor or TeachingAssistant role"
     install_instructor_extensions
