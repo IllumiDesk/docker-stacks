@@ -42,7 +42,7 @@ RUN chmod +rx -Rf /usr/local/bin/before-notebook.d/
 # default config that loads/appends from the base config. this is usefule in case
 # we need to add other images that default to other paths, etc.
 RUN mkdir -p /etc/jupyter
-COPY jupyter_notebook_config.py nbgrader_config.py /etc/jupyter/
+COPY jupyter_notebook_config.py global_nbgrader_config.py /etc/jupyter/
 
 # install tini
 # we do this for the sake of consistency with the upstream jupyter/docker-stacks images
