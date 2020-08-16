@@ -6,18 +6,6 @@ install_tini () {
     conda clean -y -q -a
 }
 
-install_java_kernel () {
-    # install java kernel
-    cd /tmp
-    git clone https://github.com/frankfliu/IJava.git
-    cd /tmp/IJava
-    ./gradlew installKernel
-    # cleanup
-    cd /tmp
-    rm -rf IJava/
-    rm -rf ~/.gradle
-}
-
 enable_classicextensions () {
     # community extensions
     jupyter contrib nbextension install --sys-prefix
