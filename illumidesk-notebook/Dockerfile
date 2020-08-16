@@ -44,15 +44,6 @@ RUN chmod +rx -Rf /usr/local/bin/before-notebook.d/
 RUN mkdir -p /etc/jupyter
 COPY jupyter_notebook_config.py global_nbgrader_config.py /etc/jupyter/
 
-# install tini
-# we do this for the sake of consistency with the upstream jupyter/docker-stacks images
-# and then use it to set the image's entrypoint
-RUN conda install --quiet --yes 'tini=0.18.0' \
- && conda list tini | grep tini | tr -s ' ' | cut -d ' ' -f 1,2 >> "${CONDA_DIR}/conda-meta/pinned" \
- && conda clean -y -q -a \
- && fix-permissions "${CONDA_DIR}" \
- && fix-permissions "${HOME}"
-
 # fix permissions for configs, conda, and home as root
 RUN fix-permissions /etc/jupyter/ \
  && fix-permissions "${CONDA_DIR}" \
