@@ -42,7 +42,8 @@ RUN chmod +rx -Rf /usr/local/bin/before-notebook.d/
 # default config that loads/appends from the base config. this is usefule in case
 # we need to add other images that default to other paths, etc.
 RUN mkdir -p /etc/jupyter
-COPY jupyter_notebook_config.py global_nbgrader_config.py /etc/jupyter/
+COPY jupyter_notebook_config.py /etc/jupyter/
+COPY global_nbgrader_config.py /etc/jupyter/nbgrader_config.py
 
 # fix permissions for configs, conda, and home as root
 RUN fix-permissions /etc/jupyter/ \
