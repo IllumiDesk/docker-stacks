@@ -1,11 +1,5 @@
 #!/bin/bash
 
-install_tini () {
-    conda install --quiet --yes 'tini=0.18.0'
-    conda list tini | grep tini | tr -s ' ' | cut -d ' ' -f 1,2 >> "${CONDA_DIR}/conda-meta/pinned"
-    conda clean -y -q -a
-}
-
 enable_classicextensions () {
     # community extensions
     jupyter contrib nbextension install --sys-prefix
@@ -56,7 +50,6 @@ fix_permissions () {
 }
 
 main () {
-    install_tini
     install_java_kernel
     enable_classicextensions
     install_labextensions
