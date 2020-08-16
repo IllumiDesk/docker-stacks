@@ -1,7 +1,7 @@
 black==19.10b0
 docker==4.2.2
 flake8==3.8.3
-jupyter-repo2docker==0.11.0
+git+https://github.com/jupyterhub/repo2docker.git@fc74bef9a866da58b4af2e35a4684e393fd9fae0
 pytest==5.4.3
 recommonmark==0.5.0
 requests==2.24.0
