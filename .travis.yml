@@ -15,7 +15,9 @@ jobs:
         - pip install -r dev-requirements.txt
       script:
         - set -e
-        - travis_wait 30 make build-all
+        - make build/base-notebook
+        - make build/grader-notebook
+        - travis_wait make build/illumidesk-notebook
         - pytest -vv
 
 stages:
