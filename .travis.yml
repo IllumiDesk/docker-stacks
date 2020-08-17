@@ -16,8 +16,10 @@ jobs:
       script:
         - set -e
         - make build/base-notebook
-        - make build/grader-notebook
         - travis_wait make build/illumidesk-notebook
+        - make build/learner-notebook
+        - make build/instructor-notebook
+        - make build/grader-notebook
         - make build/theia
         - pytest -vv
 
