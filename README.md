@@ -50,7 +50,7 @@ docker run -p 8888:8888 illumidesk/illumidesk-notebook:latest
 
 The IllumiDesk docker layers for grader images are illustrated below:
 
-![Jupyter notebook grader images](/img/grader_images.png)
+![Jupyter notebook grader images](/img/docker_stacks_v2.png)
 
 ### Additional Workspace Types
 

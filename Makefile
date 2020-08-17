@@ -15,6 +15,8 @@ PYTHON=${VENV_BIN}/python3
 ALL_STACKS:=base-notebook \
 	illumidesk-notebook \
 	grader-notebook \
+	learner-notebook \
+	instructor-notebook \
 	theia
 
 ALL_IMAGES:=$(ALL_STACKS)

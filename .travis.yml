@@ -18,6 +18,7 @@ jobs:
         - make build/base-notebook
         - make build/grader-notebook
         - travis_wait make build/illumidesk-notebook
+        - make build/theia
         - pytest -vv
 
 stages:
