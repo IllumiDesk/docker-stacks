@@ -34,10 +34,6 @@ RUN chmod +rx /usr/local/bin/start*
 RUN mkdir -p /usr/local/bin/start-notebook.d \
  && mkdir -p /usr/local/bin/before-notebook.d
 
-# copy script to enable nbgrader extensions based on role
-COPY enable_extensions.sh /usr/local/bin/before-notebook.d/
-RUN chmod +rx -Rf /usr/local/bin/before-notebook.d/
-
 # copy configs, we use our own to provide a base jhub config and an additional
 # default config that loads/appends from the base config. this is usefule in case
 # we need to add other images that default to other paths, etc.
