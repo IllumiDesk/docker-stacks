@@ -1,9 +1,7 @@
-ARG BASE_IMAGE=illumidesk/base-notebook:latest
-FROM $BASE_IMAGE
+FROM illumidesk/illumidesk-notebook:latest
 
-ARG NB_UID=10001
-
-ENV NB_UID="${NB_UID}"
+ENV NB_UID=10001
+ENV NB_USER=jovyan
 
 USER root
 

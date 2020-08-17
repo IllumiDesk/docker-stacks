@@ -14,7 +14,6 @@ PYTHON=${VENV_BIN}/python3
 # Need to list the images in build dependency order
 ALL_STACKS:=base-notebook \
 	illumidesk-notebook \
-	grader-notebook \
 	learner-notebook \
 	instructor-notebook \
 	theia
