@@ -4,7 +4,10 @@
 using Pkg
 pkg"add Colors"
 pkg"add CSV"
+pkg"add CSVFiles"
+pkg"add DataFrames"
 pkg"add DelimitedFiles"
+pkg"add GMT"
 pkg"add GR"
 pkg"add IJulia"
 pkg"add ImageView"
