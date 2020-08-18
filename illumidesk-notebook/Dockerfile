@@ -2,13 +2,11 @@ FROM jupyter/base-notebook:7e2f380b1792 AS base
 
 FROM illumidesk/base-notebook:latest
 
-# add since its not included by repo2docker but we need it
+# add group id since its not included by repo2docker but we need it
 # to run fix-permissions
-ARG NB_GID=100
-
 ENV NB_USER=jovyan
 ENV NB_UID=1000
-ENV NB_GID="${NB_GID}"
+ENV NB_GID=100
 ENV HOME="/home/${NB_USER}"
 
 USER root
@@ -33,6 +31,9 @@ RUN chmod +rx /usr/local/bin/start*
 # https://jupyter-docker-stacks.readthedocs.io/en/latest/using/common.html#startup-hooks
 RUN mkdir -p /usr/local/bin/start-notebook.d \
  && mkdir -p /usr/local/bin/before-notebook.d
+
+COPY enable_extensions.sh /usr/local/bin/before-notebook.d/
+RUN chmod a+rx /usr/local/bin/before-notebook.d/enable_extensions.sh
 
 # copy configs, we use our own to provide a base jhub config and an additional
 # default config that loads/appends from the base config. this is usefule in case
