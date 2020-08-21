@@ -8,7 +8,6 @@ ENV NB_USER=jovyan
 ENV NB_UID=1000
 ENV NB_GID=100
 ENV HOME="/home/${NB_USER}"
-ENV GRANT_SUDO=yes
 
 USER root
 
