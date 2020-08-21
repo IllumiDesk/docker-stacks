@@ -1,38 +1,30 @@
 #!/bin/bash
 
-install_java_kernel () {
-    cd /tmp
-    git clone https://github.com/frankfliu/IJava.git
-    cd IJava
-    ./gradlew installKernel
-}
-
 enable_classicextensions () {
     cd "/home/${NB_USER}"
     # community extensions
-    jupyter contrib nbextension install --sys-prefix
+    jupyter contrib nbextension install --sys-prefix \
     # widgets
-    jupyter nbextension enable --py widgetsnbextension --sys-prefix
-    # install nbgrader and then disable all extensions by default
-    jupyter nbextension install --symlink --sys-prefix --py nbgrader --overwrite \
- && jupyter nbextension disable --sys-prefix --py nbgrader \
- && jupyter serverextension disable --sys-prefix --py nbgrader
-    # everyone gets the nbgrader validate extension
-    jupyter nbextension enable --sys-prefix validate_assignment/main --section=notebook \
- && jupyter serverextension enable --sys-prefix nbgrader.server_extensions.validate_assignment
+ && jupyter nbextension enable --py widgetsnbextension --sys-prefix
 }
 
 install_labextensions () {
     # Add jupyterlab extensions
-    jupyter labextension install @jupyter-widgets/jupyterlab-manager@^2.0.0
-    jupyter labextension install @bokeh/jupyter_bokeh@^2.0.0
-    jupyter labextension install jupyter-matplotlib@^0.7.2
+    jupyter labextension install @jupyter-widgets/jupyterlab-manager@^2.0.0 \
+ && jupyter labextension install @bokeh/jupyter_bokeh@^2.0.0 \
+ && jupyter labextension install jupyter-matplotlib@^0.7.2
 }
 
 install_jupyter_server_proxy () {
-    jupyter serverextension enable --sys-prefix --py jupyter_server_proxy
-    jupyter labextension install @jupyterlab/server-proxy
-    jupyter lab build -y
+    jupyter serverextension enable --sys-prefix --py jupyter_server_proxy \
+ && jupyter labextension install @jupyterlab/server-proxy@^2.1.1 \
+ && jupyter lab build -y \
+ && jupyter lab clean -y \
+ && npm cache clean --force \
+ && rm -rf "${HOME}/.cache/yarn" \
+ && rm -rf "${HOME}/.node-gyp" \
+ && fix-permissions "${CONDA_DIR}" \
+ && fix-permissions "${HOME}"
 }
 
 cleanup () {
@@ -49,10 +41,10 @@ cleanup () {
     rm -rf "/home/${NB_USER}/Manifest.toml*"
     rm -rf "/home/${NB_USER}/postBuild*"
     rm -rf "/home/${NB_USER}/Project.toml*"
+    conda clean --all -y
 }
 
 main () {
-    install_java_kernel
     enable_classicextensions
     install_labextensions
     install_jupyter_server_proxy
