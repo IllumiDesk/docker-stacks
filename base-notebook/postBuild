@@ -1,12 +1,18 @@
 #!/bin/bash
 
+install_java_kernel () {
+    cd /tmp
+    git clone https://github.com/frankfliu/IJava.git
+    cd IJava
+    ./gradlew installKernel
+}
+
 enable_classicextensions () {
+    cd "/home/${NB_USER}"
     # community extensions
     jupyter contrib nbextension install --sys-prefix
     # widgets
     jupyter nbextension enable --py widgetsnbextension --sys-prefix
-    # jupyter-server-proxy
-    jupyter serverextension enable --py jupyter_server_proxy
     # install nbgrader and then disable all extensions by default
     jupyter nbextension install --symlink --sys-prefix --py nbgrader --overwrite \
  && jupyter nbextension disable --sys-prefix --py nbgrader \
@@ -17,21 +23,22 @@ enable_classicextensions () {
 }
 
 install_labextensions () {
-    # Add lab extensions for JupyterLab
-    jupyter labextension install @jupyterlab/server-proxy --no-build
-    jupyter labextension install @jupyter-widgets/jupyterlab-manager@^2.0.0 --no-build
-    jupyter labextension install @bokeh/jupyter_bokeh@^2.0.0 --no-build
-    jupyter labextension install jupyter-matplotlib@^0.7.2 --no-build
+    # Add jupyterlab extensions
+    jupyter labextension install @jupyter-widgets/jupyterlab-manager@^2.0.0
+    jupyter labextension install @bokeh/jupyter_bokeh@^2.0.0
+    jupyter labextension install jupyter-matplotlib@^0.7.2
 }
 
-build_and_clean () {
-    # Build all installed extensions, then clean things up
+install_jupyter_server_proxy () {
+    jupyter serverextension enable --sys-prefix --py jupyter_server_proxy
+    jupyter labextension install @jupyterlab/server-proxy
     jupyter lab build -y
+}
+
+cleanup () {
+    # clean lab extensions and npm files
     jupyter lab clean -y
     npm cache clean --force
-}
-
-cleanup_home () {
     # delete items explicitly since we don't want to delete hidden files/folders
     # such as the .jupyter or .local folders
     rm -rf "/home/${NB_USER}/.cache/yarn"
@@ -44,16 +51,10 @@ cleanup_home () {
     rm -rf "/home/${NB_USER}/Project.toml*"
 }
 
-fix_permissions () {
-    fix-permissions "${CONDA_DIR}"
-    fix-permissions "${HOME}"
-}
-
 main () {
     install_java_kernel
     enable_classicextensions
     install_labextensions
-    build_and_clean
-    cleanup_home
-    fix_permissions
+    install_jupyter_server_proxy
+    cleanup
 }

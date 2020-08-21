@@ -8,6 +8,7 @@ ENV NB_USER=jovyan
 ENV NB_UID=1000
 ENV NB_GID=100
 ENV HOME="/home/${NB_USER}"
+ENV GRANT_SUDO=yes
 
 USER root
 
@@ -16,8 +17,12 @@ RUN mkdir -p /etc/jupyter
 
 # copy files from base image
 # start* includes: start-notebook.sh, start-singleuser.sh, and start.sh
-COPY --from=base /usr/local/bin/start* /usr/local/bin/
+COPY --from=base /usr/local/bin/start-notebook.sh /usr/local/bin/
+COPY --from=base /usr/local/bin/start-singleuser.sh /usr/local/bin/
 COPY --from=base /usr/local/bin/fix-permissions /usr/local/bin/
+
+# adds the -f flag when adding the jovyan group
+COPY start.sh /usr/local/bin/
 
 # copy upstream config and rename it to base config. custom config loads base config
 # with additional settings
@@ -42,16 +47,79 @@ RUN mkdir -p /etc/jupyter
 COPY jupyter_notebook_config.py /etc/jupyter/
 COPY global_nbgrader_config.py /etc/jupyter/nbgrader_config.py
 
+RUN curl -fsSL https://code-server.dev/install.sh | sh
+
+# reinstall everything in the requirements.txt file but ignore terminado to avoid disutils error
+# https://github.com/pypa/pip/issues/5247
+COPY requirements.txt /tmp/requirements.txt
+RUN python3 -m pip install --no-cache --force -r /tmp/requirements.txt --ignore-installed \
+    terminado \
+ && fix-permissions "${CONDA_DIR}" \
+ && fix-permissions "${HOME}"
+
+RUN jupyter serverextension enable --sys-prefix --py jupyter_server_proxy \
+ && jupyter labextension install @jupyterlab/server-proxy@^2.1.1 \
+ && jupyter lab build -y \
+ && jupyter lab clean -y \
+ && npm cache clean --force \
+ && rm -rf "${HOME}/.cache/yarn" \
+ && rm -rf "${HOME}/.node-gyp" \
+ && fix-permissions "${CONDA_DIR}" \
+ && fix-permissions "${HOME}"
+
+# Install facets which does not have a pip or conda package at the moment
+WORKDIR /tmp
+RUN git clone https://github.com/PAIR-code/facets.git \
+ && jupyter nbextension install facets/facets-dist/ --sys-prefix \
+ && rm -rf "/tmp/facets*" \
+ && rm -Rf "tmp/yarn-*" \
+ && rm -Rf "tmp/hsper*" \
+ && rm -Rf "tmp/v8-*" \
+ && rm -Rf "tmp/npm-*" \
+ && rm -Rf "tmp/scijava-*" \
+ && fix-permissions "${CONDA_DIR}" \
+ && fix-permissions "${HOME}"
+
+# Import matplotlib the first time to build the font cache.
+ENV XDG_CACHE_HOME="${HOME}/.cache/"
+
+RUN MPLBACKEND=Agg python -c "import matplotlib.pyplot" && \
+    fix-permissions "${HOME}"
+
 # fix permissions for configs, conda, and home as root
 RUN fix-permissions /etc/jupyter/ \
  && fix-permissions "${CONDA_DIR}" \
  && fix-permissions "${HOME}"
 
+RUN pip uninstall nbextensions_configurator \
+ && python3 -m pip install https://github.com/IllumiDesk/nbgrader/archive/v0.6.3.zip
+
+# create symlink to jupyterhub-singleuser to handle run/spawn when setting user to root(0)
+RUN ln -s "${CONDA_DIR}/envs/notebook/bin/jupyter" /usr/local/bin/ \
+ && ln -s "${CONDA_DIR}/envs/notebook/bin/jupyterhub-singleuser" /usr/local/bin/
+
 USER "${NB_UID}"
+
+# install nbgrader and then disable all extensions by default
+RUN jupyter nbextension install --symlink --sys-prefix --py nbgrader --overwrite \
+ && jupyter nbextension disable --sys-prefix --py nbgrader \
+ && jupyter serverextension disable --sys-prefix --py nbgrader
+
+# everyone gets the nbgrader validate extension
+RUN jupyter nbextension enable --sys-prefix validate_assignment/main --section=notebook \
+ && jupyter serverextension enable --sys-prefix nbgrader.server_extensions.validate_assignment
+
+# the rsession-proxy is duplicated, so uninstall the original version from repo2docker
+RUN pip uninstall -y jupyter-rsession-proxy
+
+# re install nbresuse
+RUN conda install -c conda-forge nbresuse=0.3.*
+
+WORKDIR "${HOME}"
 
 EXPOSE 8888
 
-# Configure container startup, as the standard repo2docker-based
+# Configure containe startup, as the standard repo2docker-based
 # image uses the repo2docker entrypoint. establishes consistency with
 # jupyter/docker-stacks images
 ENTRYPOINT ["tini", "-g", "--"]

@@ -13,7 +13,7 @@ LOGGER = logging.getLogger(__name__)
     'language,version_output',
     [
         ('java', ['openjdk', '11.0.8', '2020-07-14\nOpenJDK',],),
-        ('julia', ['julia', 'version', '1.4.1\n']),
+        ('julia', ['julia', 'version', '1.5.0\n']),
         ('python', ['Python', '3.8.5\n']),
         ('R', ['R', 'version', '3.6.3',],),
     ],
@@ -24,7 +24,7 @@ def test_languages(language, version_output):
     """
     LOGGER.info(f'Test that language {language} is correctly installed ...')
     client = docker.from_env()
-    output = client.containers.run('illumidesk/base-notebook', f'{language} --version')
+    output = client.containers.run('illumidesk/base-notebook:latest', f'{language} --version')
     output_decoded = output.decode('utf-8').split(' ')
     assert output_decoded[0:3] == version_output
     LOGGER.info(f'Output from command: {output_decoded[0:3]}')
