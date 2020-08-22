@@ -2,6 +2,8 @@ channels:
   - defaults
   - conda-forge
 dependencies:
+  # for julia GMT package
+  - gmt=6.1.*
   # servers/proxies
   - psycopg2=2.8.*
   # r packages
