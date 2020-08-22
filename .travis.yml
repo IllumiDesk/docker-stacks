@@ -2,7 +2,7 @@
 dist: bionic
 language: python
 python:
-  - 3.7
+  - 3.8
 sudo: required
 services:
   - docker
@@ -15,11 +15,8 @@ jobs:
         - pip install -r dev-requirements.txt
       script:
         - set -e
-        - make build/base-notebook
-        - make build/illumidesk-notebook
-        - make build/learner-notebook
-        - make build/instructor-notebook
-        - make build/theia
+        - travis_wait make build/base-notebook
+        - travis_wait make build/illumidesk-notebook
         - pytest -vv
 
 stages:
