@@ -1,5 +1,17 @@
 #!/bin/bash
 
+install_java_kernel () {
+    cd /tmp
+    git clone https://github.com/frankfliu/IJava.git
+    cd /tmp/IJava
+    ./gradlew installKernel
+    cd /tmp
+    rm -rf IJava/
+    rm -rf ~/.gradle
+    fix-permissions "${HOME}"
+    fix-permissions "${CONDA_DIR}"
+}
+
 enable_classicextensions () {
     cd "/home/${NB_USER}"
     # community extensions
