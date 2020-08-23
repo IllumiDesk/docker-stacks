@@ -6,8 +6,6 @@ dependencies:
   - gmt=6.1.*
   # servers/proxies
   - psycopg2=2.8.*
-  # conda ui package manager
-  - jupyter_conda=3.4.*
   # r packages
   - r-base=3.6.*
   - r-caret=6.*
