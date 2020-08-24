@@ -17,7 +17,7 @@ jobs:
         - set -e
         - travis_wait 60 make build/base-notebook
         - travis_wait 60 make build/illumidesk-notebook
-        - pytest -vv
+        - make test
 
 stages:
   - name: full-test

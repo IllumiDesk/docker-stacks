@@ -70,6 +70,10 @@ lint-install: ## install hadolint
 	@echo "Hadolint nstallation done!"
 	@$(HADOLINT) --version
 
+test: ## run tests
+	@echo "Running tests with pytest ..."
+	${VENV_BIN}/pytest -v
+
 venv:
 	test -d $(VENV_NAME) || virtualenv -p python3 $(VENV_NAME)
 	${PYTHON} -m pip install -r dev-requirements.txt
