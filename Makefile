@@ -13,19 +13,9 @@ PYTHON=${VENV_BIN}/python3
 
 # Need to list the images in build dependency order
 ALL_STACKS:=base-notebook \
-    learner-notebook \
-	instructor-notebook \
-	grader-notebook \
-	rstudio \
-	theia \
-	vscode
+	illumidesk-notebook
 
 ALL_IMAGES:=$(ALL_STACKS)
-
-ALL_TEST_IMAGES:=base-notebook \
-	rstudio \
-	theia \
-	vscode
 
 # Linter
 HADOLINT="${HOME}/hadolint"
@@ -42,9 +32,9 @@ help:
 build/%: DARGS?=
 build/%: TAG?=
 build/%: ## build the latest image for a stack
-	docker build $(DARGS) --rm --force-rm -t $(OWNER)/$(notdir $@):$(TAG) ./$(notdir $@)
+	jupyter-repo2docker --no-run --user-id 1000 --user-name jovyan --image-name $(OWNER)/$(notdir $@):$(TAG) ./$(notdir $@) .
 	@echo -n "Built image size: "
-	@docker images $(OWNER)/$(notdir $@):latest --format "{{.Size}}"
+	@docker images $(OWNER)/$(notdir $@):$(TAG) --format "{{.Size}}"
 
 build-all: $(foreach I,$(ALL_IMAGES), build/$(I)) ## build all stacks
 
