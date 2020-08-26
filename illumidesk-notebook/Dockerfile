@@ -1,4 +1,4 @@
-FROM jupyter/base-notebook:b2562c469cdd AS base
+FROM jupyter/base-notebook:6d42503c684f AS base
 
 FROM illumidesk/base-notebook:latest
 
