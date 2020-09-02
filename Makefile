@@ -70,6 +70,9 @@ lint-install: ## install hadolint
 	@echo "Hadolint nstallation done!"
 	@$(HADOLINT) --version
 
+test: ## test images as running containers
+	${VENV_BIN}/pytest -v
+
 venv: ## install hadolint create virtual environment
 	test -d $(VENV_NAME) || virtualenv -p python3 $(VENV_NAME)
 	${PYTHON} -m pip install -r dev-requirements.txt

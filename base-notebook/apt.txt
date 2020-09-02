@@ -13,7 +13,13 @@ fonts-liberation
 gcc
 gdebi-core
 gfortran
+ghostscript
 git
+gmt
+gmt-dcw
+gmt-gshhg
+gdal-bin
+graphicsmagick
 gnupg
 inkscape
 jed
