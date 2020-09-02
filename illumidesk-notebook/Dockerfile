@@ -1,4 +1,4 @@
-FROM jupyter/base-notebook:b2562c469cdd AS base
+FROM jupyter/base-notebook:6d42503c684f AS base
 
 FROM illumidesk/base-notebook:latest
 
@@ -16,12 +16,8 @@ RUN mkdir -p /etc/jupyter
 
 # copy files from base image
 # start* includes: start-notebook.sh, start-singleuser.sh, and start.sh
-COPY --from=base /usr/local/bin/start-notebook.sh /usr/local/bin/
-COPY --from=base /usr/local/bin/start-singleuser.sh /usr/local/bin/
+COPY --from=base /usr/local/bin/start-* /usr/local/bin/
 COPY --from=base /usr/local/bin/fix-permissions /usr/local/bin/
-
-# adds the -f flag when adding the jovyan group
-COPY start.sh /usr/local/bin/
 
 # copy upstream config and rename it to base config. custom config loads base config
 # with additional settings
@@ -70,12 +66,7 @@ RUN jupyter serverextension enable --sys-prefix --py jupyter_server_proxy \
 WORKDIR /tmp
 RUN git clone https://github.com/PAIR-code/facets.git \
  && jupyter nbextension install facets/facets-dist/ --sys-prefix \
- && rm -rf "/tmp/facets*" \
- && rm -Rf "tmp/yarn-*" \
- && rm -Rf "tmp/hsper*" \
- && rm -Rf "tmp/v8-*" \
- && rm -Rf "tmp/npm-*" \
- && rm -Rf "tmp/scijava-*" \
+ && rm -Rf "/tmp/*" \
  && fix-permissions "${CONDA_DIR}" \
  && fix-permissions "${HOME}"
 
