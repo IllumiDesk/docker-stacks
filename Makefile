@@ -32,7 +32,7 @@ help:
 build/%: DARGS?=
 build/%: TAG?=
 build/%: ## build the latest image for a stack
-	jupyter-repo2docker --no-run --user-id 1000 --user-name jovyan --image-name $(OWNER)/$(notdir $@):$(TAG) ./$(notdir $@) .
+	${VENV_BIN}/jupyter-repo2docker --no-run --user-id 1000 --user-name jovyan --image-name $(OWNER)/$(notdir $@):$(TAG) ./$(notdir $@) .
 	@echo -n "Built image size: "
 	@docker images $(OWNER)/$(notdir $@):$(TAG) --format "{{.Size}}"
 
@@ -70,6 +70,6 @@ lint-install: ## install hadolint
 	@echo "Hadolint nstallation done!"
 	@$(HADOLINT) --version
 
-venv:
+venv: ## install hadolint create virtual environment
 	test -d $(VENV_NAME) || virtualenv -p python3 $(VENV_NAME)
 	${PYTHON} -m pip install -r dev-requirements.txt
