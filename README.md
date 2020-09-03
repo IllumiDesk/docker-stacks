@@ -38,25 +38,18 @@ docker run -p 8888:8888 illumidesk/illumidesk-notebook:latest
 
 ### Images prepared for Learning Tools Interoperability (LTI) Roles
 
-- **Base Jupyter Notebook**: based on the [`jupyter/datascience-notebook`](https://github.com/jupyter/docker-stacks/tree/master/datascience-notebook) plus:
+- **Base Jupyter Notebook**: based on the [`jupyter/base-notebook`](https://github.com/jupyter/docker-stacks/tree/master/datascience-notebook) plus:
 
   - Java kernel using JRE based on Open JDK 11
-  - Julia, Python, and R packages installed with files (install.jl, requirements.txt, environment.yml, respectively).
-  - Jupyter Notebook configuration to support iFrames
+  - Julia, Python, and R packages installed with [repo2docker-based conventions](https://repo2docker.readthedocs.io/en/latest/)
+  - C++ kernels (11, 14, and 17) with Xeus installed with `conda`.
+  - Jupyter Notebook configuration to support iFrames.
+  - `nbgrader` extensions enabled by LTI role (`learner` and `instructor`)
+  - Jupyter Classic and JupyterLab launchers for `jupyter-server-proxy` compatible services.
+  - VS Code compatible IDE with `code-server` available with the `/vscode` path.
+  - RStudio and Shiny servers available with the `/rstudio` and `/shiny` paths, respectively.
 
-- **Learner Jupyter Notebook**: adds `nbgrader` extensions for the `learner` role.
-- **Instructor Jupyter Notebook**: adds `nbgrader` extensions for the `instructor` role.
-- **Grader Jupyter Notebook**: adds `nbgrader` extensions for the shared `grader` notebook.
-
-The IllumiDesk docker layers for grader images are illustrated below:
-
-![Jupyter notebook grader images](/img/docker_stacks_v2.png)
-
-### Additional Workspace Types
-
-- **THEIA IDE**: basic version of the THEIA IDE. `THEIA` is highly configurable, refer to [their documention](https://github.com/eclipse-theia/theia#documentation) for customization options (mostly done via package.json modifications).
-- **VS Code**: this image contains the `code-server` VS Code distribution optimized for `docker`.
-- **RStudio**: uses [`illumidesk/r-conda`](https://github.com/illumidesk/r-conda) as a base image.
+### Image Layers
 
 The IllumiDesk docker layers for workspace types are illustrated below:
 
@@ -76,20 +69,23 @@ The base image uses the standard `repo2docker` convention to set dependencies. [
 2. (Optional) Use the base image from step 1 above as a base image for an image compatible with the illumidesk stack.
 
 ```
-FROM jupyter/minimal-notebook:latest AS base
+FROM jupyter/base-notebook:latest AS base
 
 FROM illumidesk/base-notebook:latest
 
-ENV NB_USER=jovyan
-ENV NB_UID=1000
-ENV NB_GID="${NB_GID}"
-ENV HOME="/home/${NB_USER}"
+USER root
 
 COPY --from=base /usr/local/bin/start* /usr/local/bin/
 COPY --from=base /usr/local/bin/fix-permissions /usr/local/bin/
 COPY --from=base /etc/jupyter/jupyter_notebook_config.py /etc/jupyter/
 
-RUN ...
+RUN ... do stuff
+
+RUN fix-permissions "${HOME} \
+ && fix-permissions "${CONDA_DIR}  # make sure you run fix-permissions after doing stuff
+
+USER "${NB_USER}"
+
 ```
 
 2. Push images to DockerHub
@@ -98,7 +94,17 @@ RUN ...
 docker push organization/custom-image
 ```
 
-## Testing
+## Development and Testing
+
+1. Create your virtual environment and install dev-requirements:
+
+    make venv
+
+2. Check Dockerfiles with linter:
+
+    make lint-all
+
+Type `make help` for additional commands.
 
 Tests start the docker container(s), runs commands by emulating the  `docker exec ...` command, and asserts the outputs. You can run tests on one image or all images. Use the `TAG` key to specify a docker image tag to test (TAG defaults to `latest`):
 
@@ -109,3 +115,11 @@ pytest -v
 ## References
 
 These images are based on the `jupyter/docker-stacks` images. [Refer to their documentation](https://jupyter-docker-stacks.readthedocs.io/en/latest/) for the full set of configuration options.
+
+## Attributions
+
+- [JupyterHub repo2docker](https://repo2docker.readthedocs.io/en/latest/)
+- [jupyter/docker-stacks images](https://github.com/jupyter/docker-stacks)
+- [code-server](https://github.com/cdr/code-server)
+
+RStudio and Shiny are trademarks of RStudio, PBC. Refer to RStudio's trademark guidelines for more information.
