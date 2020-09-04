@@ -91,25 +91,29 @@ USER "${NB_USER}"
 2. Push images to DockerHub
 
 ```bash
-docker push organization/custom-image
+    docker push organization/custom-image
 ```
 
 ## Development and Testing
 
 1. Create your virtual environment and install dev-requirements:
 
+```bash
     make venv
+```
 
 2. Check Dockerfiles with linter:
 
+```bash
     make lint-all
+```
 
 Type `make help` for additional commands.
 
 Tests start the docker container(s), runs commands by emulating the  `docker exec ...` command, and asserts the outputs. You can run tests on one image or all images. Use the `TAG` key to specify a docker image tag to test (TAG defaults to `latest`):
 
 ```bash
-pytest -v
+    make test
 ```
 
 ## References
