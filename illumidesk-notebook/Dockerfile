@@ -9,6 +9,10 @@ ENV NB_UID=1000
 ENV NB_GID=100
 ENV HOME="/home/${NB_USER}"
 
+RUN julia -e "using Pkg; Pkg.instantiate()" \
+ && julia -e "using Pkg; Pkg.precompile()" \
+ && julia -e "using WebIO; WebIO.install_jupyter_nbextension()"
+
 USER root
 
 # first config location checked by jupyter --paths

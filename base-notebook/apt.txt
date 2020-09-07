@@ -11,6 +11,7 @@ ffmpeg
 fonts-dejavu
 fonts-liberation
 gcc
+gdal-bin
 gdebi-core
 gfortran
 ghostscript
@@ -18,7 +19,6 @@ git
 gmt
 gmt-dcw
 gmt-gshhg
-gdal-bin
 graphicsmagick
 gnupg
 inkscape
@@ -26,17 +26,18 @@ jed
 jq
 libclang-dev
 libapparmor1
-libxext-dev
+libgtk-3-0
 libgl1-mesa-glx
 libgtk-3-dev
 libqt5widgets5
 libpq-dev
 libsm6
+libxext-dev
 libxrender1
 libxext6
 libxt6
-locales
 lmodern
+locales
 netcat
 nano
 openjdk-11-jdk-headless
