@@ -18,9 +18,6 @@ RUN julia -e "using Pkg; Pkg.instantiate()" \
 
 USER root
 
-# first config location checked by jupyter --paths
-RUN mkdir -p /etc/jupyter
-
 # copy files from base image
 # start* includes: start-notebook.sh, start-singleuser.sh, and start.sh
 COPY --from=base /usr/local/bin/start-* /usr/local/bin/
@@ -59,9 +56,7 @@ USER "${NB_UID}"
 # https://github.com/pypa/pip/issues/5247
 COPY requirements.txt /tmp/requirements.txt
 RUN python3 -m pip install --no-cache --force -r /tmp/requirements.txt --ignore-installed \
-    terminado \
- && fix-permissions "${CONDA_DIR}" \
- && fix-permissions "${HOME}"
+    terminado
 
 RUN jupyter serverextension enable --sys-prefix --py jupyter_server_proxy \
  && jupyter labextension install @jupyterlab/server-proxy@^2.1.1 \
@@ -69,9 +64,7 @@ RUN jupyter serverextension enable --sys-prefix --py jupyter_server_proxy \
  && jupyter lab clean -y \
  && npm cache clean --force \
  && rm -rf "${HOME}/.cache/yarn" \
- && rm -rf "${HOME}/.node-gyp" \
- && fix-permissions "${CONDA_DIR}" \
- && fix-permissions "${HOME}"
+ && rm -rf "${HOME}/.node-gyp"
 
 # install nbgrader fork
 RUN pip uninstall nbextensions_configurator \
