@@ -2,16 +2,19 @@ FROM jupyter/base-notebook:6d42503c684f AS base
 
 FROM illumidesk/base-notebook:latest
 
+ARG NB_USER="jovyan"
+ARG NB_UID="1000"
+ARG NB_GID="100"
+
 # add group id since its not included by repo2docker but we need it
 # to run fix-permissions
-ENV NB_USER=jovyan
-ENV NB_UID=1000
-ENV NB_GID=100
+ENV NB_USER="${NB_USER}"
+ENV NB_UID="${NB_UID}"
+ENV NB_GID="${NB_GID}"
 ENV HOME="/home/${NB_USER}"
 
 RUN julia -e "using Pkg; Pkg.instantiate()" \
- && julia -e "using Pkg; Pkg.precompile()" \
- && julia -e "using WebIO; WebIO.install_jupyter_nbextension()"
+ && julia -e "using Pkg; Pkg.precompile()"
 
 USER root
 
@@ -46,7 +49,11 @@ RUN mkdir -p /etc/jupyter
 COPY jupyter_notebook_config.py /etc/jupyter/
 COPY global_nbgrader_config.py /etc/jupyter/nbgrader_config.py
 
-RUN curl -fsSL https://code-server.dev/install.sh | sh
+# create symlink to jupyterhub-singleuser to handle run/spawn when setting user to root(0)
+RUN ln -s "${CONDA_DIR}/envs/notebook/bin/jupyter" /usr/local/bin/ \
+ && ln -s "${CONDA_DIR}/envs/notebook/bin/jupyterhub-singleuser" /usr/local/bin/
+
+USER "${NB_UID}"
 
 # reinstall everything in the requirements.txt file but ignore terminado to avoid disutils error
 # https://github.com/pypa/pip/issues/5247
@@ -66,48 +73,37 @@ RUN jupyter serverextension enable --sys-prefix --py jupyter_server_proxy \
  && fix-permissions "${CONDA_DIR}" \
  && fix-permissions "${HOME}"
 
-# Install facets which does not have a pip or conda package at the moment
-WORKDIR /tmp
-RUN git clone https://github.com/PAIR-code/facets.git \
- && jupyter nbextension install facets/facets-dist/ --sys-prefix \
- && rm -Rf "/tmp/*" \
- && fix-permissions "${CONDA_DIR}" \
- && fix-permissions "${HOME}"
+# install nbgrader fork
+RUN pip uninstall nbextensions_configurator \
+ && python3 -m pip install https://github.com/IllumiDesk/nbgrader/archive/v0.6.3.zip
 
-# Import matplotlib the first time to build the font cache.
-ENV XDG_CACHE_HOME="${HOME}/.cache/"
+# install and disable all nbgrader extensions
+RUN jupyter nbextension install --symlink --sys-prefix --py nbgrader --overwrite \
+ && jupyter nbextension disable --sys-prefix --py nbgrader \
+ && jupyter serverextension disable --sys-prefix --py nbgrader
 
-RUN MPLBACKEND=Agg python -c "import matplotlib.pyplot" && \
-    fix-permissions "${HOME}"
+# enable validate extension for everyone
+RUN jupyter nbextension enable --sys-prefix validate_assignment/main --section=notebook \
+ && jupyter serverextension enable --sys-prefix nbgrader.server_extensions.validate_assignment
+
+# the rsession-proxy is duplicated, so uninstall the original version from repo2docker
+# TODO: why is this package installed twice?
+RUN pip uninstall -y jupyter-rsession-proxy
+
+# re install nbresuse
+RUN conda install -c conda-forge nbresuse=0.3.*
+
+USER root
+
+# install code-server
+RUN curl -fsSL https://code-server.dev/install.sh | sh
 
 # fix permissions for configs, conda, and home as root
 RUN fix-permissions /etc/jupyter/ \
  && fix-permissions "${CONDA_DIR}" \
  && fix-permissions "${HOME}"
 
-RUN pip uninstall nbextensions_configurator \
- && python3 -m pip install https://github.com/IllumiDesk/nbgrader/archive/v0.6.3.zip
-
-# create symlink to jupyterhub-singleuser to handle run/spawn when setting user to root(0)
-RUN ln -s "${CONDA_DIR}/envs/notebook/bin/jupyter" /usr/local/bin/ \
- && ln -s "${CONDA_DIR}/envs/notebook/bin/jupyterhub-singleuser" /usr/local/bin/
-
 USER "${NB_UID}"
-
-# install nbgrader and then disable all extensions by default
-RUN jupyter nbextension install --symlink --sys-prefix --py nbgrader --overwrite \
- && jupyter nbextension disable --sys-prefix --py nbgrader \
- && jupyter serverextension disable --sys-prefix --py nbgrader
-
-# everyone gets the nbgrader validate extension
-RUN jupyter nbextension enable --sys-prefix validate_assignment/main --section=notebook \
- && jupyter serverextension enable --sys-prefix nbgrader.server_extensions.validate_assignment
-
-# the rsession-proxy is duplicated, so uninstall the original version from repo2docker
-RUN pip uninstall -y jupyter-rsession-proxy
-
-# re install nbresuse
-RUN conda install -c conda-forge nbresuse=0.3.*
 
 WORKDIR "${HOME}"
 
