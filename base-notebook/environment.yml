@@ -36,18 +36,22 @@ dependencies:
     - dash==1.12
     - flake8==3.8.3
     - fredapi==0.4.2
+    - gensim==3.8.3
     - jupyter-contrib-nbextensions==0.5
     - jupyter-dash==0.3.0
     - jupyterhub==1.1.0
     - matplotlib==3.3.0
     - nbgitpuller==0.8.0
     - nbresuse==0.3.*
+    - nltk==3.5
     - otter-grader==1.0.0.b9
     - plotly==4.9.0
     - plotly-charts==0.5
     - plotly-geo==1.0
+    - pyLDAvis==2.1.2
     - python-language-server==0.33.3
     - seaborn==0.10.1
+    - spacy==2.3.2
     - statsmodels==0.12.0
     - yellowbrick==1.1
     - xgboost==1.1.1
