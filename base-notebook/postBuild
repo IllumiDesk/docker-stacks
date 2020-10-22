@@ -1,17 +1,5 @@
 #!/bin/bash
 
-install_java_kernel () {
-    cd /tmp
-    git clone https://github.com/frankfliu/IJava.git
-    cd /tmp/IJava
-    ./gradlew installKernel
-    cd /tmp
-    rm -rf IJava/
-    rm -rf ~/.gradle
-    fix-permissions "${HOME}"
-    fix-permissions "${CONDA_DIR}"
-}
-
 enable_classicextensions () {
     cd "/home/${NB_USER}"
     # community extensions
@@ -23,8 +11,6 @@ enable_classicextensions () {
 install_labextensions () {
     # Add jupyterlab extensions
     jupyter labextension install @jupyter-widgets/jupyterlab-manager@^2.0.0
-    jupyter labextension install @bokeh/jupyter_bokeh@^2.0.0
-    jupyter labextension install jupyter-matplotlib@^0.7.2
 }
 
 install_jupyter_server_proxy () {
