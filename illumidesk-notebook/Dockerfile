@@ -42,7 +42,7 @@ RUN mkdir -p /etc/jupyter
 COPY jupyter_notebook_config.py /etc/jupyter/
 COPY global_nbgrader_config.py /etc/jupyter/nbgrader_config.py
 
-RUN curl -fsSL https://code-server.dev/install.sh | sh
+USER "${NB_UID}"
 
 # reinstall everything in the requirements.txt file but ignore terminado to avoid disutils error
 # https://github.com/pypa/pip/issues/5247
@@ -52,37 +52,14 @@ RUN python3 -m pip install --no-cache --force -r /tmp/requirements.txt --ignore-
  && fix-permissions "${CONDA_DIR}" \
  && fix-permissions "${HOME}"
 
-RUN jupyter serverextension enable --sys-prefix --py jupyter_server_proxy \
- && jupyter labextension install @jupyterlab/server-proxy@^2.1.1 \
- && jupyter lab build -y \
- && jupyter lab clean -y \
- && npm cache clean --force \
- && rm -rf "${HOME}/.cache/yarn" \
- && rm -rf "${HOME}/.node-gyp" \
- && fix-permissions "${CONDA_DIR}" \
- && fix-permissions "${HOME}"
-
-# Install facets which does not have a pip or conda package at the moment
-WORKDIR /tmp
-RUN git clone https://github.com/PAIR-code/facets.git \
- && jupyter nbextension install facets/facets-dist/ --sys-prefix \
- && rm -Rf "/tmp/*" \
- && fix-permissions "${CONDA_DIR}" \
- && fix-permissions "${HOME}"
-
-# Import matplotlib the first time to build the font cache.
-ENV XDG_CACHE_HOME="${HOME}/.cache/"
-
-RUN MPLBACKEND=Agg python -c "import matplotlib.pyplot" && \
-    fix-permissions "${HOME}"
+USER root
 
 # fix permissions for configs, conda, and home as root
 RUN fix-permissions /etc/jupyter/ \
  && fix-permissions "${CONDA_DIR}" \
- && fix-permissions "${HOME}"
-
-RUN pip uninstall nbextensions_configurator \
- && python3 -m pip install https://github.com/IllumiDesk/nbgrader/archive/v0.6.3.zip
+ && fix-permissions "${HOME}" \
+ && chown -Rf "${NB_UID}":"${NB_GID}" "${CONDA_DIR}" \
+ && chown -Rf "${NB_UID}":"${NB_GID}" "${HOME}"
 
 # create symlink to jupyterhub-singleuser to handle run/spawn when setting user to root(0)
 RUN ln -s "${CONDA_DIR}/envs/notebook/bin/jupyter" /usr/local/bin/ \
