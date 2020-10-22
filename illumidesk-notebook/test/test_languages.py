@@ -12,10 +12,7 @@ LOGGER = logging.getLogger(__name__)
 @pytest.mark.parametrize(
     'language,version_output',
     [
-        ('java', ['openjdk', '11.0.8', '2020-07-14\nOpenJDK',],),
-        ('julia', ['julia', 'version', '1.5.0\n']),
         ('python', ['Python', '3.8.5\n']),
-        ('R', ['R', 'version', '3.6.3',],),
     ],
 )
 def test_languages(language, version_output):

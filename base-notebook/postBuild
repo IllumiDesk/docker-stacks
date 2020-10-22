@@ -36,9 +36,7 @@ cleanup () {
     rm -rf "/home/${NB_USER}/apt.txt"
     rm -rf "/home/${NB_USER}/npm*"
     rm -rf "/home/${NB_USER}/environment.yml*"
-    rm -rf "/home/${NB_USER}/Manifest.toml*"
     rm -rf "/home/${NB_USER}/postBuild*"
-    rm -rf "/home/${NB_USER}/Project.toml*"
     conda clean --all -y
 }
 
