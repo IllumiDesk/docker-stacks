@@ -17,23 +17,15 @@ jobs:
         - make venv
       script:
         - set -e
-        - travis_wait 60 make build-all
+        - travis_wait 30 make build-all
         - make test
     - stage: push-images
-      script:
-        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        - docker push illumidesk/base-notebook:latest
-        - docker push illumidesk/illumidesk-notebook:latest
-        - docker push illumidesk/grader-notebook:latest
-        - docker tag illumidesk/illumidesk-notebook:latest illumidesk/illumidesk-notebook:${TRAVIS_COMMIT}
-        - docker tag illumidesk/grader-notebook:latest illumidesk/grader-notebook:${TRAVIS_COMMIT}
-        - docker tag illumidesk/base-notebook:latest illumidesk/base-notebook:${TRAVIS_COMMIT}
-        - docker push illumidesk/base-notebook:${TRAVIS_COMMIT}
-        - docker push illumidesk/illumidesk-notebook:${TRAVIS_COMMIT}
-        - docker push illumidesk/grader-notebook:${TRAVIS_COMMIT}
+      after_success:
+        - make travis_wait 30 makebuild-all
+        - bash scripts/after_success.sh
 
 stages:
   - name: full-test
     if: branch = main
-  - name: push-images
+  - name: full-test
     if: branch = main
