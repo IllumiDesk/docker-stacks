@@ -17,7 +17,7 @@ jobs:
         - make venv
       script:
         - set -e
-        - make build-all
+        - travis_wait 60 make build-all
         - make test
     - stage: push-images
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
