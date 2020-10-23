@@ -42,6 +42,9 @@ RUN mkdir -p /etc/jupyter
 COPY jupyter_notebook_config.py /etc/jupyter/
 COPY global_nbgrader_config.py /etc/jupyter/nbgrader_config.py
 
+RUN chown -Rf "${NB_UID}":"${NB_GID}" "${CONDA_DIR}" \
+ && chown -Rf "${NB_UID}":"${NB_GID}" "${HOME}"
+
 USER "${NB_UID}"
 
 # reinstall everything in the requirements.txt file but ignore terminado to avoid disutils error
