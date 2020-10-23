@@ -10,6 +10,9 @@ dependencies:
   # since the illumidesk stack depends on Postgress
   - psycopg2=2.8.*
 
+  # use python 3.8 as the default
+  - python=3.8.5
+
   # add r packages if needed, for example
   # - r-base=3.6.*
   # - r-caret=6.*
