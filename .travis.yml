@@ -15,8 +15,7 @@ jobs:
         - make venv
       script:
         - set -e
-        - make build/base-notebook
-        - travis_wait 60 make build/illumidesk-notebook
+        - make build-all
         - make test
 
 stages:
