@@ -20,9 +20,11 @@ jobs:
         - travis_wait 30 make build-all
         - make test
     - stage: push-images
+      script:
+        - make build-all
       after_success:
-        - make travis_wait 30 makebuild-all
         - bash scripts/after_success.sh
+
 
 stages:
   - name: full-test
