@@ -1,4 +1,4 @@
-FROM jupyter/base-notebook:6d42503c684f AS base
+FROM jupyter/base-notebook:45bfe5a474fa AS base
 
 FROM illumidesk/base-notebook:latest
 
@@ -19,7 +19,7 @@ RUN mkdir -p /etc/jupyter
 
 # copy files from base image
 # start* includes: start-notebook.sh, start-singleuser.sh, and start.sh
-COPY --from=base /usr/local/bin/start-* /usr/local/bin/
+COPY --from=base /usr/local/bin/start* /usr/local/bin/
 COPY --from=base /usr/local/bin/fix-permissions /usr/local/bin/
 
 # copy upstream config and rename it to base config. custom config loads base config
