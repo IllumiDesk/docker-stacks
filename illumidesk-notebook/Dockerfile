@@ -2,11 +2,14 @@ FROM jupyter/base-notebook:6d42503c684f AS base
 
 FROM illumidesk/base-notebook:latest
 
+ARG NB_UID=1000
+ARG NB_GID=100
+
 # add group id since its not included by repo2docker but we need it
 # to run fix-permissions
 ENV NB_USER=jovyan
-ENV NB_UID=1000
-ENV NB_GID=100
+ENV NB_UID=$NB_UID
+ENV NB_GID=$NB_GID
 ENV HOME="/home/${NB_USER}"
 
 USER root
@@ -42,8 +45,10 @@ RUN mkdir -p /etc/jupyter
 COPY jupyter_notebook_config.py /etc/jupyter/
 COPY global_nbgrader_config.py /etc/jupyter/nbgrader_config.py
 
-RUN chown -Rf "${NB_UID}":"${NB_GID}" "${CONDA_DIR}" \
- && chown -Rf "${NB_UID}":"${NB_GID}" "${HOME}"
+# update permissions as root
+RUN fix-permissions /etc/jupyter/ \
+ && fix-permissions "${CONDA_DIR}" \
+ && fix-permissions "${HOME}"
 
 USER "${NB_UID}"
 
@@ -51,18 +56,26 @@ USER "${NB_UID}"
 # https://github.com/pypa/pip/issues/5247
 COPY requirements.txt /tmp/requirements.txt
 RUN python3 -m pip install --no-cache --force -r /tmp/requirements.txt --ignore-installed \
-    terminado \
+    terminado
+
+RUN jupyter serverextension enable --sys-prefix --py jupyter_server_proxy \
+ && jupyter labextension install @jupyterlab/server-proxy@^2.1.1 \
+ && jupyter lab build -y \
+ && jupyter lab clean -y \
+ && npm cache clean --force \
+ && rm -rf "${HOME}/.cache/yarn" \
+ && rm -rf "${HOME}/.node-gyp" \
  && fix-permissions "${CONDA_DIR}" \
  && fix-permissions "${HOME}"
 
-USER root
+# Install Tini
+RUN conda install --quiet --yes 'tini=0.18.0' && \
+    conda list tini | grep tini | tr -s ' ' | cut -d ' ' -f 1,2 >> $CONDA_DIR/conda-meta/pinned && \
+    conda clean --all -f -y && \
+    fix-permissions $CONDA_DIR && \
+    fix-permissions /home/$NB_USER
 
-# fix permissions for configs, conda, and home as root
-RUN fix-permissions /etc/jupyter/ \
- && fix-permissions "${CONDA_DIR}" \
- && fix-permissions "${HOME}" \
- && chown -Rf "${NB_UID}":"${NB_GID}" "${CONDA_DIR}" \
- && chown -Rf "${NB_UID}":"${NB_GID}" "${HOME}"
+USER root
 
 # create symlink to jupyterhub-singleuser to handle run/spawn when setting user to root(0)
 RUN ln -s "${CONDA_DIR}/envs/notebook/bin/jupyter" /usr/local/bin/ \
@@ -78,12 +91,6 @@ RUN jupyter nbextension install --symlink --sys-prefix --py nbgrader --overwrite
 # everyone gets the nbgrader validate extension
 RUN jupyter nbextension enable --sys-prefix validate_assignment/main --section=notebook \
  && jupyter serverextension enable --sys-prefix nbgrader.server_extensions.validate_assignment
-
-# the rsession-proxy is duplicated, so uninstall the original version from repo2docker
-RUN pip uninstall -y jupyter-rsession-proxy
-
-# re install nbresuse
-RUN conda install -c conda-forge nbresuse=0.3.*
 
 WORKDIR "${HOME}"
 
