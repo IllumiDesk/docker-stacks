@@ -20,6 +20,7 @@ jobs:
         - travis_wait 60 make build-all
         - make test
     - stage: push-images
+      script:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - docker push illumidesk/base-notebook:latest
         - docker push illumidesk/illumidesk-notebook:latest
