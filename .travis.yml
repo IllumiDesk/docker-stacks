@@ -13,7 +13,7 @@ jobs:
   include:
     - stage: build-test-push
       install:
-        - echo "$DOCKER_TOKEN" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - bash scripts/docker_login.sh
         - pip install --upgrade pip
         - make venv
       script:
