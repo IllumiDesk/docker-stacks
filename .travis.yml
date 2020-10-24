@@ -13,7 +13,6 @@ jobs:
   include:
     - stage: build-test-push
       install:
-        - bash scripts/docker_login.sh
         - pip install --upgrade pip
         - make venv
       script:
@@ -21,7 +20,6 @@ jobs:
         - make build-all
         - make test
       after_success:
-        - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
         - bash scripts/after_success.sh
 
 stages:
