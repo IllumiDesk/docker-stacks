@@ -56,6 +56,9 @@ RUN echo "auth requisite pam_deny.so" >> /etc/pam.d/su && \
     fix-permissions "${HOME}" && \
     fix-permissions "${CONDA_DIR}"
 
+# create path required by start.sh
+RUN mkdir -p /etc/sudoers.d/path
+
 # update permissions as root
 RUN fix-permissions /etc/jupyter/ \
  && fix-permissions "${CONDA_DIR}" \

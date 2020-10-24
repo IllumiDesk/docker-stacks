@@ -11,23 +11,17 @@ services:
 
 jobs:
   include:
-    - stage: full-test
+    - stage: build-test-push
       install:
         - pip install --upgrade pip
         - make venv
       script:
         - set -e
-        - travis_wait 30 make build-all
+        - travis_wait 60 make build-all
         - make test
-    - stage: push-images
-      script:
-        - make build-all
       after_success:
         - bash scripts/after_success.sh
 
-
 stages:
-  - name: full-test
-    if: branch = main
-  - name: full-test
+  - name: build-test-push
     if: branch = main
