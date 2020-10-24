@@ -20,6 +20,7 @@ jobs:
         - make build-all
         - make test
       after_success:
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - bash scripts/after_success.sh
 
 stages:
