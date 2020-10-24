@@ -17,7 +17,7 @@ jobs:
         - make venv
       script:
         - set -e
-        - travis_wait 60 make build-all
+        - make build-all
         - make test
       after_success:
         - bash scripts/after_success.sh
