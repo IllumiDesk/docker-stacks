@@ -6,8 +6,11 @@ set -e
 tag_and_push () {
   if [ "${TRAVIS_PULL_REQUEST}" == "false" ]; then
     if [ "${TRAVIS_BRANCH}" == "main" ]; then
+      echo "${DOCKERHUB_TOKEN}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
       export TAG="${TRAVIS_BUILD_NUMBER}"
-      make build-all
+      make push-all
+      export TAG="latest"
+      make push-all
     fi
   fi
 }

@@ -39,6 +39,13 @@ build/%: ## build the latest image for a stack
 
 build-all: $(foreach I,$(ALL_IMAGES), build/$(I)) ## build all stacks
 
+push/%: DARGS?=
+push/%: TAG?=
+push/%: ## build the latest image for a stack
+	@docker push --image-name $(OWNER)/$(notdir $@):$(TAG) ./$(notdir $@) .
+
+push-all: $(foreach I,$(ALL_IMAGES), push/$(I)) ## push all stacks
+
 clean-all: ## clean all docker containers
 	@docker rm -f $(docker ps -aq)
 
