@@ -50,8 +50,6 @@ COPY global_nbgrader_config.py /etc/jupyter/nbgrader_config.py
 RUN echo "auth requisite pam_deny.so" >> /etc/pam.d/su && \
     sed -i.bak -e 's/^%admin/#%admin/' /etc/sudoers && \
     sed -i.bak -e 's/^%sudo/#%sudo/' /etc/sudoers && \
-    mkdir -p "${CONDA_DIR}" && \
-    chown "${NB_USER}":"${NB_GID}" "${CONDA_DIR}" && \
     chmod g+w /etc/passwd && \
     fix-permissions "${HOME}" && \
     fix-permissions "${CONDA_DIR}"
