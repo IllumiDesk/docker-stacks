@@ -4,6 +4,9 @@
 # mac
 .DS_Store
 
+# npm
+node_modules/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
