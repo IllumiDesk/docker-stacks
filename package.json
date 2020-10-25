@@ -1,6 +1,6 @@
 {
     "name": "illumidesk-docker-stacks",
-    "version": "2.0.0",
+    "version": "0.1.1",
     "description": "Template repo to manage IllumiDesk compatible workspaces.",
     "scripts": {
         "release": "standard-version"
