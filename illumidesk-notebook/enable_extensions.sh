@@ -1,9 +1,5 @@
 #!/bin/bash
 
-enable_julia_webio_extension() (
-    julia -e "using WebIO; WebIO.install_jupyter_nbextension()"
-)
-
 install_instructor_extensions() (
     jupyter serverextension enable --sys-prefix nbgrader.server_extensions.assignment_list
     jupyter serverextension enable --sys-prefix nbgrader.server_extensions.course_list
@@ -15,8 +11,6 @@ install_student_extensions() (
     jupyter serverextension enable --sys-prefix nbgrader.server_extensions.assignment_list
     jupyter nbextension enable --sys-prefix assignment_list/main --section=tree
 )
-
-enable_julia_webio_extension
 
 if [[ "${USER_ROLE}" == "Instructor" ]] || [[ "${USER_ROLE}" == "TeachingAssistant" ]]; then
     echo "Enabling nbgrader extensions for Instructor or TeachingAssistant role"

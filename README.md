@@ -1,8 +1,8 @@
 [![Build Status](https://travis-ci.com/IllumiDesk/docker-stacks.svg?branch=main)](https://travis-ci.com/IllumiDesk/docker-stacks)
 
-# IllumiDesk docker-stacks
+# IllumiDesk Docker Stacks
 
-Dockerfiles and related assets for IllumiDesk's workspace images.
+Dockerfiles and related assets for IllumiDesk's workspace images. The purpose of this repo is to provide a template repo for IllumiDesk customer-centric images. To create a new customer-centric repo, click on the Use this Template button and confirm the repo name.
 
 ## Pre Requisits
 
@@ -10,15 +10,19 @@ Dockerfiles and related assets for IllumiDesk's workspace images.
 
 ## Quickstart
 
-1. Build images
+1. Install dependencies
 
-Build images:
-
+```bash
+make venv
 ```
+
+2. Build images
+
+```bash
 make build-all
 ```
 
-2. Run:
+3. Run:
 
 Running the image standalone is helpful for testing:
 
@@ -26,47 +30,44 @@ Running the image standalone is helpful for testing:
 docker run -p 8888:8888 illumidesk/illumidesk-notebook:latest
 ```
 
+Then, navigate to `http://localhost:8888` to access your Jupyter Notebook server.
+
 > Refer to [docker's documentation](https://docs.docker.com/engine/reference/run/) for additional `docker run ...` options.
+
+4. Test:
+
+```bash
+make test
+```
 
 ## Image catalogue
 
 | Image | DockerHub Link |
 | --- | --- |
 | illumidesk/base-notebook | [![Docker Image](https://img.shields.io/docker/automated/illumidesk/base-notebook)](https://img.shields.io/docker/automated/illumidesk/base-notebook?label=base-notebook) |
-| illumidesk/grader-notebook | [![Docker Image](https://img.shields.io/docker/automated/illumidesk/grader-notebook)](https://hub.docker.com/repository/docker/illumidesk/base-notebook?label=grader-notebook) |
-| illumidesk/illumidesk-notebook | [![Docker Image](https://img.shields.io/docker/automated/illumidesk/instructor-notebook)](https://hub.docker.com/repository/docker/illumidesk/illumidesk-notebook?label=illumidesk-notebook) |
-
-### Images prepared for Learning Tools Interoperability (LTI) Roles
-
-- **Base Jupyter Notebook**: based on the [`jupyter/base-notebook`](https://github.com/jupyter/docker-stacks/tree/master/datascience-notebook) plus:
-
-  - Java kernel using JRE based on Open JDK 11
-  - Julia, Python, and R packages installed with [repo2docker-based conventions](https://repo2docker.readthedocs.io/en/latest/)
-  - C++ kernels (11, 14, and 17) with Xeus installed with `conda`.
-  - Jupyter Notebook configuration to support iFrames.
-  - `nbgrader` extensions enabled by LTI role (`learner` and `instructor`)
-  - Jupyter Classic and JupyterLab launchers for `jupyter-server-proxy` compatible services.
-  - VS Code compatible IDE with `code-server` available with the `/vscode` path.
-  - RStudio and Shiny servers available with the `/rstudio` and `/shiny` paths, respectively.
-
-### Image Layers
-
-The IllumiDesk docker layers for workspace types are illustrated below:
-
-![Jupyter notebook workspace images](/img/docker_stacks_v2.png)
+| illumidesk/illumidesk-notebook | [![Docker Image](https://img.shields.io/docker/automated/illumidesk/illumidesk-notebook)](https://hub.docker.com/repository/docker/illumidesk/illumidesk-notebook?label=illumidesk-notebook) |
+| illumidesk/grader-notebook | [![Docker Image](https://img.shields.io/docker/automated/illumidesk/grader-notebook)](https://hub.docker.com/repository/docker/illumidesk/grader-notebook?label=grader-notebook) |
 
 ## Build Mechanism
 
-1. Build and tag the base image or all images at once. Use the `TAG` argument to add your custom tag. The `TAG` argument defaults to `latest` if not specified:
+1. Build and tag the base image or all images at once. Use the `TAG` argument to add your custom tag. The `TAG` argument defaults to `latest` if not specified.
+
+Build all images:
 
 ```bash
-    make build/base-notebook TAG=mytag
+make build-all
 ```
 
-The base image uses the standard `repo2docker` convention to set dependencies. [Refer to this project's documentaiton](https://repo2docker.readthedocs.io/en/latest/) for additional configuration options.
+Build one image with custom tag:
+
+```bash
+make build/base-notebook TAG=mytag
+```
+
+> The base image uses the standard `repo2docker` convention to set dependencies. [Refer to this project's documentaiton](https://repo2docker.readthedocs.io/en/latest/) for additional configuration options.
 
 
-2. (Optional) Use the base image from step 1 above as a base image for an image compatible with the illumidesk stack.
+1. (Optional) Use the base image from step 1 above as a base image for an image compatible with the IllumiDesk stack.
 
 ```
 FROM jupyter/base-notebook:latest AS base
@@ -88,10 +89,16 @@ USER "${NB_USER}"
 
 ```
 
-2. Push images to DockerHub
+2. (Optional) Push images to DockerHub
+
+This step requires creating an Organization account in DockerHub or other docker image compatible registry. The `docker push ...`
+command will push the image to the DockerHub registry by default. Please refer to the official Docker documentation if you would
+like to push another registry.
+
+For example, assuming the DockerHub organization is `illumidesk`, the source files are in the `illumidesk-notebook` folder, and the tag is `latest`, then the full namespace for the image would be `illumidesk/illumidesk-notebook:latest`. Assuming the image has been built, push the image to DockerHub or any other docker registry with the `docker push ...` command:
 
 ```bash
-    docker push organization/custom-image
+docker push illumidesk/illumidesk-notebook:latest
 ```
 
 ## Development and Testing
@@ -99,21 +106,19 @@ USER "${NB_USER}"
 1. Create your virtual environment and install dev-requirements:
 
 ```bash
-    make venv
+make venv
 ```
 
 2. Check Dockerfiles with linter:
 
-```bash
-    make lint-all
+```base
+make lint-all
 ```
 
-Type `make help` for additional commands.
+3. Run tests:
 
-Tests start the docker container(s), runs commands by emulating the  `docker exec ...` command, and asserts the outputs. You can run tests on one image or all images. Use the `TAG` key to specify a docker image tag to test (TAG defaults to `latest`):
-
-```bash
-    make test
+```base
+make test
 ```
 
 ## References
@@ -124,6 +129,7 @@ These images are based on the `jupyter/docker-stacks` images. [Refer to their do
 
 - [JupyterHub repo2docker](https://repo2docker.readthedocs.io/en/latest/)
 - [jupyter/docker-stacks images](https://github.com/jupyter/docker-stacks)
-- [code-server](https://github.com/cdr/code-server)
 
-RStudio and Shiny are trademarks of RStudio, PBC. Refer to RStudio's trademark guidelines for more information.
+## License
+
+MIT

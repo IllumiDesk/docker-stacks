@@ -37,7 +37,14 @@ build/%: ## build the latest image for a stack
 	@echo -n "Built image size: "
 	@docker images $(OWNER)/$(notdir $@):$(TAG) --format "{{.Size}}"
 
-build-all: $(foreach I,$(ALL_IMAGES), build/$(I)) ## build all stacks
+build-all: $(foreach I,$(ALL_IMAGES), build/$(I)) ## build all stack
+
+push/%: DARGS?=
+push/%: TAG?=
+push/%: ## push stack images
+	@docker push $(OWNER)/$(notdir $@):$(TAG)
+
+push-all: $(foreach I,$(ALL_IMAGES), push/$(I)) ## push all stacks
 
 clean-all: ## clean all docker containers
 	@docker rm -f $(docker ps -aq)

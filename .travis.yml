@@ -1,4 +1,6 @@
 ---
+os: linux
+arch: arm64-graviton2
 dist: bionic
 language: python
 python:
@@ -9,16 +11,17 @@ services:
 
 jobs:
   include:
-    - stage: full-test
+    - stage: build-test-push
       install:
         - pip install --upgrade pip
         - make venv
       script:
         - set -e
-        - make build/base-notebook
-        - travis_wait 60 make build/illumidesk-notebook
+        - make build-all
         - make test
+      after_success:
+        - bash scripts/after_success.sh
 
 stages:
-  - name: full-test
+  - name: build-test-push
     if: branch = main
