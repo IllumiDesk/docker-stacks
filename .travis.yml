@@ -20,6 +20,7 @@ jobs:
         - make build-all
         - make test
       after_success:
+        - echo "${DOCKERHUB_TOKEN}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
         - bash scripts/after_success.sh
 
 stages:
