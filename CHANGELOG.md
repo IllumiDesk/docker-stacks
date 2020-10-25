@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [1.0.1](https://github.com/IllumiDesk/illumidesk/compare/v1.0.0...v1.0.1) (2020-10-25)
 
+* Adds `standard-version` to manage releases
+
 ## 1.0.0 (2020-10-25)
 
 
