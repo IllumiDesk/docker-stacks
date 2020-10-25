@@ -2,24 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [1.0.0](https://github.com/IllumiDesk/illumidesk/compare/v0.0.0-development...v1.0.0) (2020-10-25)
-
-## [0.0.0-development](https://github.com/IllumiDesk/illumidesk/compare/v0.9.2...v0.0.0-development) (2020-10-25)
-
-### [0.9.2](https://github.com/IllumiDesk/illumidesk/compare/v0.9.1...v0.9.2) (2020-10-25)
-
-### [0.9.1](https://github.com/IllumiDesk/illumidesk/compare/v0.0.1...v0.9.1) (2020-10-25)
-
-### [0.0.1](https://github.com/IllumiDesk/illumidesk/compare/v0.1.1...v0.0.1) (2020-10-25)
-
-### [0.1.1](https://github.com/IllumiDesk/illumidesk/compare/v2.0.0...v0.1.1) (2020-10-25)
-
-## 2.0.0 (2020-10-25)
+## 1.0.0 (2020-10-25)
 
 
 ### ⚠ BREAKING CHANGES
 
-* this repo no longer manages specific dependencies but rather a setup to run workspaces with the IllumiDesk stack.
+* This repo no longer manages specific dependencies but rather a setup to run workspaces with the IllumiDesk stack.
+
+### Features
+
+* Convert to template repo ([#37](https://github.com/IllumiDesk/illumidesk/issues/37)) ([49c82a4](https://github.com/IllumiDesk/illumidesk/commit/49c82a4a18dabac9426b897322296b968dd0780f))
+
+
+## 0.2.0 (2020-09-25)
 
 ### Features
 
