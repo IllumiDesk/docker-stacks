@@ -11,8 +11,7 @@ RUN jupyter nbextension enable --sys-prefix create_assignment/main \
  && jupyter serverextension enable --sys-prefix nbgrader.server_extensions.formgrader
 
 # fix permissions as root
-RUN fix-permissions  \
- && fix-permissions "${HOME}" \
+RUN fix-permissions "${HOME}" \
  && fix-permissions "${CONDA_DIR}"
 
 # ensure we start user sessions with nb_user/nb_uid 
