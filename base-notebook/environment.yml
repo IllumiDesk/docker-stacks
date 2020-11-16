@@ -10,14 +10,14 @@ dependencies:
   # since the illumidesk stack depends on Postgress
   - psycopg2=2.8.*
 
-  # use python 3.8 as the default
-  - python=3.8.5
+  # use python 3.7 as the default
+  - python=3.7
 
-  # add r packages if needed, for example
+  # add r packages if needed, for example:
   # - r-base=3.6.*
   # - r-caret=6.*
 
-  # you can also add additional kernels. for example,
+  # you can also add additional kernels. for example:
   # - xeus-cling=0.9.*
 
   # python/pip packages
