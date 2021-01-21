@@ -1,7 +1,0 @@
-ca-certificates
-fonts-liberation
-locales
-run-one
-sudo
-wget
-nano
