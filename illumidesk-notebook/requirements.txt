@@ -1,3 +1,3 @@
 https://github.com/IllumiDesk/nbgrader/archive/v0.64.3.zip
 jupyter-server-proxy==1.5.0
-jupyterlab==2.2.4
+jupyterlab==2.2.8
