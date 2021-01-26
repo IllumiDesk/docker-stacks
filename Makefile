@@ -77,7 +77,7 @@ lint-install: ## install hadolint
 	@echo "Hadolint nstallation done!"
 	@$(HADOLINT) --version
 
-test: ## test images as running containers
+test: build-all ## test images as running containers
 	${VENV_BIN}/pytest -v
 
 venv: ## install hadolint create virtual environment

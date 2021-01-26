@@ -22,6 +22,18 @@ make venv
 make build-all
 ```
 
+You can also override default tags and/or images using the `--build-args` flag to override the defaults assigned to the `BASE_IMAGE` and `TAG` arguments.
+
+For example:
+
+```bash
+docker build \
+  --build-arg BASE_IMAGE=jupyter/minimal-notebook \
+  --build-arg TAG=latest \
+  -t illumidesk/illumidesk-notebook \
+  illumidesk-notebook/.
+```
+
 3. Run:
 
 Running the image standalone is helpful for testing:
@@ -39,41 +51,6 @@ Then, navigate to `http://localhost:8888` to access your Jupyter Notebook server
 ```bash
 make test
 ```
-
-## Build Mechanism
-
-1. Build and tag the base image or all images at once. Use the `TAG` argument to add your custom tag. The `TAG` argument defaults to `latest` if not specified.
-
-Build all images:
-
-```bash
-make build-all
-```
-
-Build one image with custom tag:
-
-```bash
-make build/illumidesk-notebook TAG=mytag
-```
-
-
-1. (Optional) Change the base image based on one of the [`jupyter/docker-stacks`](https://github.com/jupyter/docker-stacks) images.
-
-```
-
-FROM jupyter/scipy-notebook:latest
-
-RUN ... do stuff
-
-USER root
-
-RUN fix-permissions "${HOME} \
- && fix-permissions "${CONDA_DIR}  # make sure you run fix-permissions after doing stuff
-
-USER "${NB_USER}"
-
-```
-
 ## Development and Testing
 
 1. Create your virtual environment and install dev-requirements:
@@ -84,19 +61,28 @@ make venv
 
 2. Check Dockerfiles and code formatting with linters:
 
-```base
+```bash
 make lint-all
 ```
 
 3. Run tests:
 
-```base
+The standard `make test` command ensures the image is built before running tests:
+
+```bash
 make test
+```
+
+You can skip the build step and run the tests directly:
+
+```bash
+pytest -v
 ```
 
 ## References
 
 These images are based on the `jupyter/docker-stacks` images. [Refer to their documentation](https://jupyter-docker-stacks.readthedocs.io/en/latest/) for the full set of configuration options.
+
 ## License
 
 MIT
