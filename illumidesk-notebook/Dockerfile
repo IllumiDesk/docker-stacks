@@ -1,4 +1,9 @@
-FROM jupyter/scipy-notebook:aec555e49be6
+ARG TAG=aec555e49be6
+ARG BASE_IMAGE=jupyter/scipy-notebook
+
+FROM jupyter/base-notebook:$TAG AS base
+
+FROM $BASE_IMAGE:$TAG
 
 ARG NB_UID=1000
 ARG NB_GID=100
@@ -6,8 +11,8 @@ ARG NB_GID=100
 # add group id since its not included by repo2docker but we need it
 # to run fix-permissions
 ENV NB_USER=jovyan
-ENV NB_UID=$NB_UID
-ENV NB_GID=$NB_GID
+ENV NB_UID="${NB_UID}"
+ENV NB_GID="${NB_GID}"
 ENV HOME="/home/${NB_USER}"
 
 USER root
@@ -19,6 +24,7 @@ RUN chmod a+rx /usr/local/bin/before-notebook.d/enable_extensions.sh
 # default config that loads/appends from the base config. this is usefule in case
 # we need to add other images that default to other paths, etc.
 RUN mkdir -p /etc/jupyter
+COPY --from=base /etc/jupyter/jupyter_notebook_config.py /etc/jupyter/jupyter_notebook_config_base.py
 COPY jupyter_notebook_config.py /etc/jupyter/
 COPY global_nbgrader_config.py /etc/jupyter/nbgrader_config.py
 
