@@ -1,6 +1,6 @@
 {
   "name": "illumidesk-docker-stacks",
-  "version": "1.0.1",
+  "version": "1.2.0",
   "description": "Template repo to manage IllumiDesk compatible workspaces.",
   "scripts": {
     "release": "standard-version"
@@ -9,7 +9,7 @@
   "homepage": "https://illumidesk.com/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/IllumiDesk/illumidesk.git"
+    "url": "https://github.com/IllumiDesk/docker-stacks.git"
   },
   "license": "MIT",
   "devDependencies": {
