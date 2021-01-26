@@ -1,6 +1,9 @@
-FROM jupyter/base-notebook:aec555e49be6 as base
+ARG TAG=aec555e49be6
+ARG BASE_IMAGE=jupyter/scipy-notebook
 
-FROM jupyter/scipy-notebook:aec555e49be6
+FROM jupyter/base-notebook:$TAG AS base
+
+FROM $BASE_IMAGE:$TAG
 
 ARG NB_UID=1000
 ARG NB_GID=100
