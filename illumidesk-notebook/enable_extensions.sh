@@ -6,6 +6,7 @@ install_instructor_extensions() (
     jupyter serverextension enable --sys-prefix async_nbgrader
     jupyter nbextension enable --sys-prefix course_list/main --section=tree
     jupyter nbextension enable --sys-prefix assignment_list/main --section=tree
+    jupyter nbextension enable --sys-prefix --py async_nbgrader
 )
 
 install_student_extensions() (
