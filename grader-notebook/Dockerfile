@@ -1,4 +1,4 @@
-FROM illumidesk/illumidesk-notebook:aec555e49be6
+FROM illumidesk/illumidesk-notebook:latest
 
 # add group id since its not included by repo2docker but we need it
 # to run fix-permissions
