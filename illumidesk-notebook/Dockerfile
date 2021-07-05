@@ -49,7 +49,9 @@ USER "${NB_UID}"
 # install nbgrader and then disable all extensions by default
 RUN jupyter nbextension install --symlink --sys-prefix --py nbgrader --overwrite \
  && jupyter nbextension disable --sys-prefix --py nbgrader \
- && jupyter serverextension disable --sys-prefix --py nbgrader
+ && jupyter serverextension disable --sys-prefix --py nbgrader \
+ && jupyter nbextension install --symlink --sys-prefix async_nbgrader/common --overwrite \
+ && jupyter serverextension disable --sys-prefix --py async_nbgrader
 
 # everyone gets the nbgrader validate extension
 RUN jupyter nbextension enable --sys-prefix validate_assignment/main --section=notebook \
