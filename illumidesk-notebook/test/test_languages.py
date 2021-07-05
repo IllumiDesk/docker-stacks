@@ -18,7 +18,7 @@ def test_languages(language, version_output):
     """
     LOGGER.info(f'Test that language {language} is correctly installed ...')
     client = docker.from_env()
-    output = client.containers.run('illumidesk/base-notebook:latest', f'{language} --version')
+    output = client.containers.run('illumidesk/illumidesk-notebook:python-3.9.5', f'{language} --version')
     output_decoded = output.decode('utf-8').split(' ')
     assert output_decoded[0:3] == version_output
     LOGGER.info(f'Output from command: {output_decoded[0:3]}')
