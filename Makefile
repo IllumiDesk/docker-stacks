@@ -54,6 +54,9 @@ dev/%: PORT?=8888
 dev/%: ## run one of the containers (stacks) on port 8888
 	docker run -it --rm -p $(PORT):8888 $(DARGS) $(OWNER)/$(notdir $@) $(ARGS)
 
+dev-env: ## install libraries required to build docs and run tests
+	@pip install -r dev-requirements.txt
+
 lint/%: ARGS?=--config .hadolint.yml
 lint/%: ## lint the dockerfile(s) for a stack
 	@echo "Linting Dockerfiles with Hadolint in $(notdir $@)..."
