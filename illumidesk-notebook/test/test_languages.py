@@ -22,12 +22,3 @@ def test_languages(language, version_output):
     output_decoded = output.decode('utf-8').split(' ')
     assert output_decoded[0:3] == version_output
     LOGGER.info(f'Output from command: {output_decoded[0:3]}')
-
-
-def test_invalid_cmd():
-    """Ensure that an invalid command returns a docker.errors.ContainerError
-    """
-    with pytest.raises(ContainerError):
-        LOGGER.info('Test an invalid command ...')
-        client = docker.from_env()
-        client.containers.run('illumidesk/base-notebook', 'foo --version')
