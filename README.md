@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/IllumiDesk/docker-stacks.svg?branch=main)](https://travis-ci.com/IllumiDesk/docker-stacks)
+[![GitHub Workflow Status - Test](https://img.shields.io/github/workflow/status/illumidesk/docker-stacks/Test?logo=github&label=tests)](https://github.com/illumidesk/docker-stacks/actions)
 
 # IllumiDesk Docker Stacks
 
