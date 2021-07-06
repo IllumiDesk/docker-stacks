@@ -56,6 +56,8 @@ requests==2.25.1
     # via
     #   -r dev-requirements.in
     #   docker
+six==1.16.0
+    # via -r dev-requirements.in
 toml==0.10.2
     # via
     #   black
