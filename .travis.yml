@@ -18,7 +18,7 @@ jobs:
       script:
         - set -e
         - make build-all
-        - make test
+        - venv/bin/pytest -v
       after_success:
         - bash scripts/after_success.sh
 
