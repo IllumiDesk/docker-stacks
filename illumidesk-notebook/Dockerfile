@@ -1,5 +1,5 @@
-ARG TAG=aec555e49be6
-ARG BASE_IMAGE=jupyter/scipy-notebook
+ARG TAG=python-3.9.5
+ARG BASE_IMAGE=jupyter/minimal-notebook
 
 FROM jupyter/base-notebook:$TAG AS base
 
@@ -16,9 +16,6 @@ ENV NB_GID="${NB_GID}"
 ENV HOME="/home/${NB_USER}"
 
 USER root
-
-COPY enable_extensions.sh /usr/local/bin/before-notebook.d/
-RUN chmod a+rx /usr/local/bin/before-notebook.d/enable_extensions.sh
 
 # copy configs, we use our own to provide a base jhub config and an additional
 # default config that loads/appends from the base config. this is usefule in case
@@ -41,16 +38,6 @@ COPY requirements.txt /tmp/requirements.txt
 RUN python3 -m pip install --no-cache --force -r /tmp/requirements.txt --ignore-installed \
     terminado
 
-RUN jupyter serverextension enable --sys-prefix --py jupyter_server_proxy \
- && jupyter labextension install @jupyterlab/server-proxy@^2.1.1 \
- && jupyter lab build -y \
- && jupyter lab clean -y \
- && npm cache clean --force \
- && rm -rf "${HOME}/.cache/yarn" \
- && rm -rf "${HOME}/.node-gyp" \
- && fix-permissions "${CONDA_DIR}" \
- && fix-permissions "${HOME}"
-
 USER root
 
 # create symlink to jupyterhub-singleuser to handle run/spawn when setting user to root(0)
@@ -62,12 +49,16 @@ USER "${NB_UID}"
 # install nbgrader and then disable all extensions by default
 RUN jupyter nbextension install --symlink --sys-prefix --py nbgrader --overwrite \
  && jupyter nbextension disable --sys-prefix --py nbgrader \
- && jupyter serverextension disable --sys-prefix --py nbgrader \
- && jupyter nbextension install --symlink --sys-prefix async_nbgrader/common --overwrite \
- && jupyter serverextension disable --sys-prefix --py async_nbgrader
+ && jupyter serverextension disable --sys-prefix --py nbgrader
 
 # everyone gets the nbgrader validate extension
 RUN jupyter nbextension enable --sys-prefix validate_assignment/main --section=notebook \
  && jupyter serverextension enable --sys-prefix nbgrader.server_extensions.validate_assignment
+
+# everyone gets the course list and assignment list extensions
+RUN jupyter serverextension enable --sys-prefix nbgrader.server_extensions.assignment_list \
+ && jupyter serverextension enable --sys-prefix nbgrader.server_extensions.course_list \
+ && jupyter nbextension enable --sys-prefix course_list/main --section=tree \
+ && jupyter nbextension enable --sys-prefix assignment_list/main --section=tree
 
 WORKDIR "${HOME}"

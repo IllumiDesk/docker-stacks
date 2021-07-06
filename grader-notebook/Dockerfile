@@ -1,8 +1,15 @@
-FROM illumidesk/illumidesk-notebook:latest
+FROM illumidesk/illumidesk-notebook:python-3.9.5
 
-# add group id since its not included by repo2docker but we need it
-# to run fix-permissions
-ENV NB_UID=10001
+USER "${NB_USER}"
+
+WORKDIR /tmp
+
+RUN git clone https://github.com/IllumiDesk/async-nbgrader.git
+
+WORKDIR /tmp/async-nbgrader
+
+RUN pip install -U pip \
+ && pip install -e .
 
 USER root
 
@@ -11,6 +18,14 @@ RUN jupyter nbextension enable --sys-prefix create_assignment/main \
  && jupyter nbextension enable --sys-prefix async_nbgrader/common \
  && jupyter serverextension enable --sys-prefix nbgrader.server_extensions.formgrader \
  && jupyter serverextension enable --sys-prefix --py async_nbgrader
+
+RUN jupyter nbextension install --sys-prefix --py async_nbgrader --overwrite \
+ && jupyter nbextension enable --sys-prefix --py async_nbgrader \
+ && jupyter serverextension enable --sys-prefix --py async_nbgrader
+
+# add group id since its not included by repo2docker but we need it
+# to run fix-permissions
+ENV NB_UID=10001
 
 # fix permissions as root
 RUN fix-permissions "${HOME}" \

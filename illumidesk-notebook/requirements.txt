@@ -1,4 +1,4 @@
-https://github.com/IllumiDesk/async_nbgrader/archive/v0.1.1.zip
-jupyter-server-proxy==1.5.0
-jupyterlab==2.2.8
-nbgitpuller==0.9.0
+jupyter-server-proxy==3.1.0
+jupyterlab==3.0.16
+nbgitpuller==0.10.1
+nbgrader==0.6.2
