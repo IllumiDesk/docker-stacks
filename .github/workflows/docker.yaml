@@ -8,7 +8,6 @@ on:
       - "binder/**"
       - "docs/**"
       - "examples/**"
-      - ".pre-commit-config.yaml"
   push:
     branches:
       - main
@@ -25,9 +24,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    if: >
-      !contains(github.event.head_commit.message, 'ci skip') &&
-      !contains(github.event.pull_request.title, 'ci skip')
     steps:
       - name: Clone Main Repo
         uses: actions/checkout@v2
@@ -53,7 +49,7 @@ jobs:
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9 # dependabot updates to latest release
         with:
           username: ${{secrets.DOCKERHUB_USERNAME}}
-          password: ${{secrets.DOCKERHUB_TOKEN}}
+          password: ${{secrets.DOCKERHUB_PASSWORD}}
       - name: Push Images to DockerHub
         if: github.ref == 'refs/heads/main'
         run: make -C main push-all
