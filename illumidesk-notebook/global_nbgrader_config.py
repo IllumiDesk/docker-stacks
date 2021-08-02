@@ -17,5 +17,6 @@ c.Exchange.path_includes_course = True
 c.Exchange.root = "/srv/nbgrader/exchange"
 
 # Increase timeouts to avoid unnecessary exits when autograding
-c.ExecutePreprocessor.iopub_timeout=180
-c.ExecutePreprocessor.timeout=360
+c.ExecutePreprocessor.iopub_timeout = 180
+
+c.ExecutePreprocessor.timeout = 360

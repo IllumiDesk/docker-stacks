@@ -8,10 +8,11 @@ import pytest
 
 LOGGER = logging.getLogger(__name__)
 
-PYTHON_VERSION='3.8.8'
-NOTEBOOK_IMAGE_TAG=f'python-{PYTHON_VERSION}'
-NOTEBOOK_IMAGE_NAME= 'illumidesk/illumidesk-notebook'
-NOTEBOOK_IMAGE=f'{NOTEBOOK_IMAGE_NAME}:{NOTEBOOK_IMAGE_TAG}'
+PYTHON_VERSION = '3.8.8'
+NOTEBOOK_IMAGE_TAG = f'python-{PYTHON_VERSION}'
+NOTEBOOK_IMAGE_NAME = 'illumidesk/illumidesk-notebook'
+NOTEBOOK_IMAGE = f'{NOTEBOOK_IMAGE_NAME}:{NOTEBOOK_IMAGE_TAG}'
+
 
 @pytest.mark.parametrize(
     'language,version_output',
@@ -32,8 +33,7 @@ def test_languages(language, version_output):
 
 
 def test_invalid_cmd():
-    """Ensure that an invalid command returns a docker.errors.ContainerError
-    """
+    """Ensure that an invalid command returns a docker.errors.ContainerError"""
     with pytest.raises(ContainerError):
         LOGGER.info('Test an invalid command ...')
         client = docker.from_env()
