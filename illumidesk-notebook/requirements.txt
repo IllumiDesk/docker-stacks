@@ -1,4 +1,5 @@
+git+https://github.com/jgwerner/nbgrader.git@cb882435ee096d28dd94dd0c4202a3aef64fa69c
+git+https://github.com/IllumiDesk/async-nbgrader.git@dc22f1cd57154aad9540f051d518bb7119b8648f
 jupyter-server-proxy==3.1.0
 jupyterlab==3.0.16
 nbgitpuller==0.10.1
-nbgrader==0.6.2
