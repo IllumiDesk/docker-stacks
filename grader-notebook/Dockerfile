@@ -1,4 +1,4 @@
-ARG TAG=python-3.8.8
+ARG TAG=python-3.9.5
 ARG BASE_IMAGE=illumidesk/illumidesk-notebook
 
 FROM $BASE_IMAGE:$TAG
