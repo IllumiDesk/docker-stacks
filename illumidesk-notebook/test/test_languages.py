@@ -8,7 +8,7 @@ import pytest
 
 LOGGER = logging.getLogger(__name__)
 
-PYTHON_VERSION = '3.8.8'
+PYTHON_VERSION = '3.9.5'
 NOTEBOOK_IMAGE_TAG = f'python-{PYTHON_VERSION}'
 NOTEBOOK_IMAGE_NAME = 'illumidesk/illumidesk-notebook'
 NOTEBOOK_IMAGE = f'{NOTEBOOK_IMAGE_NAME}:{NOTEBOOK_IMAGE_TAG}'
@@ -17,7 +17,7 @@ NOTEBOOK_IMAGE = f'{NOTEBOOK_IMAGE_NAME}:{NOTEBOOK_IMAGE_TAG}'
 @pytest.mark.parametrize(
     'language,version_output',
     [
-        ('python', ['Python', f'{PYTHON_VERSION}\n']),
+        ('python', ['Python', '3.9.6\n']),
     ],
 )
 def test_languages(language, version_output):
