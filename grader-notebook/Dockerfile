@@ -3,9 +3,11 @@ ARG BASE_IMAGE=illumidesk/illumidesk-notebook
 
 FROM $BASE_IMAGE:$TAG
 
+ARG NB_UID=10001
+
 # add group id since its not included by repo2docker but we need it
 # to run fix-permissions
-ENV NB_UID=10001
+ENV NB_UID="${NB_UID}"
 
 USER root
 
