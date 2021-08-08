@@ -15,10 +15,7 @@ NOTEBOOK_IMAGE = f'{NOTEBOOK_IMAGE_NAME}:{NOTEBOOK_IMAGE_TAG}'
 
 
 @pytest.mark.parametrize(
-    'language,version_output',
-    [
-        ('python', ['Python', '3.9.6\n']),
-    ],
+    'language,version_output', [('python', ['Python', '3.9.6\n']),],
 )
 def test_languages(language, version_output):
     """Ensure that the language is available in the container's PATH and that
