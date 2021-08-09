@@ -1,6 +1,6 @@
-git+https://github.com/jgwerner/nbgrader.git@cb882435ee096d28dd94dd0c4202a3aef64fa69c
+git+https://github.com/jupyter/nbgrader.git@2256b7efd094c4e7863f76ef26d2149b893a4462
 git+https://github.com/IllumiDesk/async-nbgrader.git@dc22f1cd57154aad9540f051d518bb7119b8648f
-jupyter-server-proxy==3.1.0
 jupyter-resource-usage==0.6.0
+jupyter-server-proxy==3.1.0
 nbgitpuller==0.10.1
 psycopg2-binary==2.9.1

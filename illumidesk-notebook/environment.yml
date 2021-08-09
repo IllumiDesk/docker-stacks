@@ -2,7 +2,6 @@ name: base
 channels:
   - conda-forge
 dependencies:
-  - pip=20.2.3
   - tini=0.18.0
 
 prefix: /srv/conda/envs/notebook
