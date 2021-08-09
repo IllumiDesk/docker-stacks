@@ -11,17 +11,18 @@ ENV NB_UID="${NB_UID}"
 
 USER root
 
+# enable create assignment and formgrader extensions
 RUN jupyter nbextension enable --sys-prefix create_assignment/main \
  && jupyter serverextension enable --sys-prefix nbgrader.server_extensions.formgrader
 
 # install and activate the async-nbgrader extensions
-RUN jupyter nbextension install --sys-prefix --py async_nbgrader --overwrite \
+RUN jupyter nbextension install --symlink --sys-prefix --py async_nbgrader --overwrite \
  && jupyter nbextension enable --sys-prefix --py async_nbgrader \
  && jupyter serverextension enable --sys-prefix --py async_nbgrader
 
 # disable the assignment extension, since graders don't need it
-RUN jupyter serverextension enable --sys-prefix nbgrader.server_extensions.assignment_list \
- && jupyter nbextension enable --sys-prefix assignment_list/main --section=tree
+RUN jupyter serverextension disable --sys-prefix nbgrader.server_extensions.assignment_list \
+ && jupyter nbextension disable --sys-prefix assignment_list/main --section=tree
 
 # fix permissions as root
 RUN fix-permissions "${HOME}" \
