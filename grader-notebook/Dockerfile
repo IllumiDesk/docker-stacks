@@ -1,4 +1,4 @@
-FROM illumidesk/illumidesk-notebook:julia-1.6.1
+FROM illumidesk/illumidesk-notebook:python-3.9.5
 
 # update with grader user id and group id
 ENV NB_UID=10001
