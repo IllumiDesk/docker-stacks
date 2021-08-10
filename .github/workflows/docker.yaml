@@ -3,20 +3,12 @@ name: Test and Build
 on:
   pull_request:
     paths-ignore:
-      - ".github/ISSUE_TEMPLATE/**"
       - "*.md"
-      - "binder/**"
-      - "docs/**"
-      - "examples/**"
   push:
     branches:
       - main
     paths-ignore:
-      - ".github/ISSUE_TEMPLATE/**"
       - "*.md"
-      - "binder/**"
-      - "docs/**"
-      - "examples/**"
 
 jobs:
   build-images:

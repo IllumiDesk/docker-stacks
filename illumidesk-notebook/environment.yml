@@ -1,0 +1,7 @@
+name: base
+channels:
+  - conda-forge
+dependencies:
+  - tini=0.18.0
+
+prefix: /srv/conda/envs/notebook

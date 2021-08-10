@@ -7,10 +7,12 @@ Dockerfiles and related assets for IllumiDesk's workspace images. The purpose of
 ## Pre Requisits
 
 - [Docker](https://docs.docker.com/get-docker/)
+- [Python 3.7+](https://www.python.org/downloads/)
+- [virtualenv](https://virtualenv.pypa.io/en/latest/installation.html#installation)
 
 ## Quickstart
 
-1. Install dependencies
+1. Install dependencies:
 
 ```bash
 make venv
@@ -22,27 +24,37 @@ make venv
 make build-all
 ```
 
-You can also override default tags and/or images using the `--build-args` flag to override the defaults assigned to the `BASE_IMAGE` and `TAG` arguments.
+You can also override default owner, tags, and use other docker arguments with the make
+command included in this repo. Type `make` from the root of this repo to confirm a complete
+list of options.
 
-For example:
+For example running:
 
 ```bash
-docker build \
-  --build-arg BASE_IMAGE=jupyter/minimal-notebook \
-  --build-arg TAG=latest \
-  -t illumidesk/illumidesk-notebook \
-  illumidesk-notebook/.
+make OWNER=foo TAG=mytag build/illumidesk-notebook
 ```
+
+Would create the image `foo/illumides-notebook:mytag`. More advanced options are available with the `DARGS`
+option which is an alias for the `--build-args` flag.
+
+> NOTE: You can use the native `docker` commands to build, push, and tag images (among others). The `make` command
+is provided as a convenience and is used with GitHub Actions for automation.
 
 3. Run:
 
 Running the image standalone is helpful for testing:
 
 ```bash
+make dev
+```
+
+Or:
+
+```bash
 docker run -p 8888:8888 illumidesk/illumidesk-notebook:latest
 ```
 
-Then, navigate to `http://localhost:8888` to access your Jupyter Notebook server.
+Then, navigate to `http://127.0.0.1:8888` to access your Jupyter Notebook server.
 
 > Refer to [docker's documentation](https://docs.docker.com/engine/reference/run/) for additional `docker run ...` options.
 
@@ -59,21 +71,15 @@ make test
 make venv
 ```
 
-2. Check Dockerfiles and code formatting with linters:
+2. Run tests:
 
-```bash
-make lint-all
-```
-
-3. Run tests:
-
-The standard `make test` command ensures the image is built before running tests:
+The standard `make test` command ensures the image is linted and built before running tests:
 
 ```bash
 make test
 ```
 
-You can skip the build step and run the tests directly:
+You can skip the build step and run the tests directly from the root of this repo:
 
 ```bash
 pytest -v
