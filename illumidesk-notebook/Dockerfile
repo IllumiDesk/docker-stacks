@@ -1,8 +1,6 @@
 ARG TAG=python-3.9.5
 ARG BASE_IMAGE=jupyter/datascience-notebook
 
-FROM jupyter/base-notebook:$TAG
-
 FROM $BASE_IMAGE:$TAG
 
 USER "${NB_USER}"
