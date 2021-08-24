@@ -1,6 +1,7 @@
-git+https://github.com/jupyter/nbgrader.git@2256b7efd094c4e7863f76ef26d2149b893a4462
-git+https://github.com/IllumiDesk/async-nbgrader.git@dc22f1cd57154aad9540f051d518bb7119b8648f
+git+https://github.com/rupeshparab/async_nbgrader.git@40fcfbdae0c86df3674612bfef13787c4ae3e621
+git+https://github.com/IllumiDesk/formgradernext.git@72653f60801f67df6cabf590920b1b0826f6703e
 jupyter-resource-usage==0.6.0
 jupyter-server-proxy==3.1.0
 nbgitpuller==0.10.1
+nbgrader==0.6.2
 psycopg2-binary==2.9.1
