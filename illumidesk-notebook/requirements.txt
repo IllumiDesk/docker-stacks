@@ -1,5 +1,5 @@
-git+https://github.com/rupeshparab/async_nbgrader.git@40fcfbd
-git+https://github.com/IllumiDesk/formgradernext.git@36ade1b
+git+https://github.com/IllumiDesk/async-nbgrader.git@a426940
+git+https://github.com/IllumiDesk/formgradernext.git@5a0e4b5
 jupyter-resource-usage==0.6.0
 jupyter-server-proxy==3.1.0
 nbgitpuller==0.10.1
