@@ -23,11 +23,6 @@ RUN jupyter nbextension install --symlink --sys-prefix --py nbgrader --overwrite
  && jupyter nbextension disable --sys-prefix --py nbgrader \
  && jupyter serverextension disable --sys-prefix --py nbgrader
 
-# install formgradernext and then disable all extensions by default
-RUN jupyter nbextension install --symlink --sys-prefix --py formgradernext --overwrite \
- && jupyter nbextension disable --sys-prefix --py formgradernext \
- && jupyter serverextension disable --sys-prefix --py formgradernext
-
 # everyone gets the nbgrader validate extension
 RUN jupyter nbextension enable --sys-prefix validate_assignment/main --section=notebook \
  && jupyter serverextension enable --sys-prefix nbgrader.server_extensions.validate_assignment
