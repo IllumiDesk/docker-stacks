@@ -1,5 +1,5 @@
 https://github.com/IllumiDesk/async-nbgrader/archive/refs/tags/v0.3.1.zip
-https://github.com/IllumiDesk/formgradernext/archive/refs/tags/v0.3.2.zip
+https://github.com/IllumiDesk/formgradernext/archive/refs/tags/v0.3.3.zip
 jupyter-resource-usage>=0.6.0
 jupyter-server-proxy>=3.1.0
 nbgitpuller>=0.10.1
