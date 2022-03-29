@@ -17,14 +17,9 @@ RUN jupyter nbextension enable --sys-prefix create_assignment/main \
 RUN jupyter nbextension disable --sys-prefix assignment_list/main --section=tree
 
 # install and activate the async-nbgrader extensions
-RUN jupyter nbextension install --sys-prefix --py async_nbgrader --overwrite \
- && jupyter nbextension enable --sys-prefix --py async_nbgrader \
- && jupyter serverextension enable --sys-prefix --py async_nbgrader
-
-# install and activate the formgrader extensions
-RUN jupyter nbextension install --symlink --sys-prefix --py formgradernext --overwrite \
- && jupyter nbextension enable --sys-prefix --py formgradernext \
- && jupyter serverextension enable --sys-prefix --py formgradernext
+RUN jupyter nbextension install --sys-prefix --py nbgrader --overwrite \
+ && jupyter nbextension enable --sys-prefix --py nbgrader \
+ && jupyter serverextension enable --sys-prefix --py nbgrader
 
 # fix permissions as root
 USER root
