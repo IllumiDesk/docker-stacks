@@ -1,4 +1,4 @@
-https://github.com/IllumiDesk/async-nbgrader/archive/refs/tags/v0.4.0.zip
+git+ssh://git@github.com/IllumiDesk/illumidesk-next.git@feature/refactor-modals-lti#subdirectory=packages/nbgrader
 https://github.com/IllumiDesk/formgradernext/archive/refs/tags/v0.3.3.zip
 jupyter-resource-usage>=0.6.0
 jupyter-server-proxy>=3.1.0
